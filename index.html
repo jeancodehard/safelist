@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Safelist · Web + App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a201d;--ink:#e8f2f0;--muted:#8fb1aa;--lime:#b9d63a;--teal:#19b3a3;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(1400px 800px at 25% 0%,#164640 0%,#0b2420 50%,#061512 100%);display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased}
+.ic{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+header{display:flex;align-items:center;gap:14px;padding:16px 28px 0;flex:0 0 auto}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#19b3a3,#0b7d72);display:grid;place-items:center;color:#fff}
+.logo .ic{width:20px;height:20px}
+header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
+header small{display:block;font-size:12px;color:var(--muted)}
+.pill{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--lime);border:1px solid rgba(185,214,58,.4);padding:4px 9px;border-radius:6px;margin-left:6px}
+.tools{margin-left:auto;display:flex;gap:8px;align-items:center}
+.tools a,.tools button{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--ink);font:inherit;font-size:12.5px;font-weight:500;text-decoration:none;cursor:pointer}
+.tools a:hover,.tools button:hover{background:rgba(255,255,255,.1)}
+main{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:14px 20px 6px;position:relative}
+.stage{display:flex;align-items:flex-end;justify-content:center;gap:var(--gap,40px)}
+.box{position:relative;flex:0 0 auto}
+.box>.inner{position:absolute;left:0;top:0;transform-origin:0 0}
+.laptop{width:1308px}
+.lid{background:#111816;border-radius:20px 20px 8px 8px;padding:14px 14px 18px;box-shadow:0 0 0 1px #2b3a37,0 40px 90px rgba(0,0,0,.5)}
+.chrome{height:40px;background:#e9eeec;border-radius:10px 10px 0 0;display:flex;align-items:center;gap:12px;padding:0 14px}
+.chrome .dots{display:flex;gap:7px}.chrome .dots i{width:12px;height:12px;border-radius:50%;background:#f26b5e}.chrome .dots i:nth-child(2){background:#f5bf4f}.chrome .dots i:nth-child(3){background:#5ec26a}
+.chrome .url{flex:1;max-width:520px;margin:0 auto;height:26px;border-radius:8px;background:#fff;color:#4f625e;font-size:13px;display:flex;align-items:center;justify-content:center;gap:7px}
+.chrome .url .ic{width:13px;height:13px;color:#0b8a7e}
+.screen-web{width:1280px;height:800px;border:0;display:block;background:#f2f5f4;border-radius:0 0 4px 4px}
+.base{height:22px;margin:0 -60px;background:linear-gradient(#c9d3d0,#8d9a96);border-radius:0 0 22px 22px;position:relative}
+.base:before{content:"";position:absolute;left:50%;top:0;width:180px;height:9px;margin-left:-90px;background:#a9b5b1;border-radius:0 0 10px 10px}
+.phone{width:414px;height:868px;background:#0f1716;border-radius:58px;padding:12px;box-shadow:0 0 0 2px #2b3a37,0 40px 90px rgba(0,0,0,.55);position:relative}
+.phone:after{content:"";position:absolute;top:22px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#050909;box-shadow:0 0 0 2px #121c1a;z-index:2}
+.screen-app{width:390px;height:844px;border:0;display:block;border-radius:46px;background:#f2f5f4}
+.cap{position:absolute;left:0;right:0;text-align:center;font-size:13px;color:var(--muted);white-space:nowrap}
+.cap b{color:var(--ink);font-weight:600}
+.link{position:absolute;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:5}
+.link .line{width:2px;height:120px;background:repeating-linear-gradient(to bottom,rgba(185,214,58,.6) 0 6px,transparent 6px 12px);background-size:2px 12px;animation:flow 1s linear infinite;opacity:.5}
+.link .bubble{background:#0f2f2a;border:1px solid rgba(185,214,58,.35);color:var(--lime);font-size:11.5px;font-weight:600;padding:6px 10px;border-radius:99px;white-space:nowrap;display:flex;gap:6px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.link.pulse .bubble{animation:pop 1.6s ease}
+.link.pulse .line{opacity:1}
+@keyframes flow{to{background-position:0 12px}}
+@keyframes pop{0%{transform:scale(.9)}15%{transform:scale(1.12);background:var(--lime);color:#0b2420}60%{transform:scale(1)}}
+footer{flex:0 0 auto;display:flex;justify-content:center;gap:10px;padding:10px 20px 18px;flex-wrap:wrap}
+.step{display:flex;gap:9px;align-items:center;font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:7px 12px}
+.step b{display:grid;place-items:center;width:20px;height:20px;border-radius:6px;background:rgba(185,214,58,.16);color:var(--lime);font-size:11px}
+.step.done{color:var(--ink);border-color:rgba(185,214,58,.35)}
+.step.done b{background:var(--lime);color:#0b2420}
+@media (max-width:900px){header{padding:14px 16px 0;flex-wrap:wrap}.tools{margin-left:0}main{overflow:auto;align-items:flex-start;padding:14px 16px}.stage{flex-direction:column;align-items:center}body{overflow:auto}footer{display:none}.link{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" id="logo"></div>
+  <div><h1>Safelist <span class="pill">PROTÓTIPO</span></h1><small>Uma atividade. Um fluxo. Um histórico. · Web para gestão, app para o campo</small></div>
+  <div class="tools">
+    <button type="button" id="theme" aria-label="Alternar tema dos protótipos"></button>
+    <a href="safelist-web.html" target="_blank" rel="noopener" id="open-web"></a>
+    <a href="safelist-app.html" target="_blank" rel="noopener" id="open-app"></a>
+  </div>
+</header>
+<main>
+  <div class="stage" id="stage">
+    <div class="box" id="lap-box"><div class="inner" id="lap-inner">
+      <div class="laptop"><div class="lid"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url" id="url"></span><span style="width:52px"></span></div><iframe class="screen-web" id="web" src="safelist-web.html#overview" title="Safelist versão web"></iframe></div><div class="base"></div></div>
+    </div><div class="cap" id="lap-cap"><b>Web</b> · gestão, configuração, validação e análise</div></div>
+    <div class="box" id="ph-box"><div class="inner" id="ph-inner">
+      <div class="phone"><iframe class="screen-app" id="app" src="safelist-app.html?embed=1" title="Safelist app Android"></iframe></div>
+    </div><div class="cap" id="ph-cap"><b>App Android</b> · campo</div></div>
+  </div>
+  <div class="link" id="link"><div class="line"></div><div class="bubble" id="bubble"></div><div class="line"></div></div>
+</main>
+<footer id="guide"></footer>
+<script>
+(function(){
+const I={shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',ext:'<path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',refresh:'<path d="M21 12a9 9 0 0 1-15.36 6.36L3 16M3 12a9 9 0 0 1 15.36-6.36L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>'};
+const ic=n=>'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+I[n]+'</svg>';
+const $=s=>document.querySelector(s);
+$("#logo").innerHTML=ic("shield");$("#url").innerHTML=ic("lock")+"app.safelist.com.br";
+$("#open-web").innerHTML=ic("ext")+"Abrir web";$("#open-app").innerHTML=ic("ext")+"Abrir app";
+$("#bubble").innerHTML=ic("refresh")+"Sincronização manual";
+
+/* ---------- escala dos aparelhos ---------- */
+const LAP=[1308,890],PH=[414,868],GAP=190;
+function fit(){
+  const main=$("main"),W=main.clientWidth-40,H=main.clientHeight-46,narrow=innerWidth<=900;
+  let sl,sp;
+  if(narrow){sl=Math.min(1,(innerWidth-32)/LAP[0]);sp=Math.min(1,(innerWidth-32)/PH[0],(innerHeight-120)/PH[1]);}
+  else{const s=Math.min(1,(W-GAP)/(LAP[0]+PH[0]),H/Math.max(LAP[1],PH[1]));sl=sp=s;}
+  [["#lap-box","#lap-inner",LAP,sl,"#lap-cap"],["#ph-box","#ph-inner",PH,sp,"#ph-cap"]].forEach(x=>{const b=$(x[0]),i=$(x[1]);b.style.width=x[2][0]*x[3]+"px";b.style.height=x[2][1]*x[3]+"px";i.style.transform="scale("+x[3]+")";const c=$(x[4]);c.style.top=(x[2][1]*x[3]+10)+"px";});
+  $("#stage").style.setProperty("--gap",(narrow?60:GAP)+"px");
+  if(!narrow){const lb=$("#lap-box").getBoundingClientRect(),pb=$("#ph-box").getBoundingClientRect(),mb=main.getBoundingClientRect(),l=$("#link");
+    l.style.left=((lb.right+pb.left)/2-mb.left-l.offsetWidth/2)+"px";l.style.top=(pb.top-mb.top+pb.height*.28)+"px";l.querySelectorAll(".line").forEach(x=>x.style.height=Math.max(40,pb.height*.16)+"px");}
+}
+addEventListener("resize",fit);fit();setTimeout(fit,300);
+
+/* ---------- roteiro ---------- */
+const steps=["Entre no app com a conta corporativa","Comunique um incidente ou entregue um EPI","Toque em Sincronizar no celular","Veja os registros chegarem no painel web"];
+const done=[false,false,false,false];
+function guide(){$("#guide").innerHTML=steps.map((s,i)=>'<span class="step'+(done[i]?" done":"")+'"><b>'+(done[i]?"✓":i+1)+'</b>'+s+'</span>').join("");}
+guide();
+
+/* ---------- tema compartilhado ---------- */
+let theme="light";
+function setTheme(t){theme=t;$("#theme").innerHTML=ic(t==="dark"?"sun":"moon")+(t==="dark"?"Tema claro":"Tema escuro");["#web","#app"].forEach(id=>{try{$(id).contentWindow.postMessage({type:"safelist-theme",theme:t},"*");}catch(e){}});}
+$("#theme").addEventListener("click",()=>setTheme(theme==="light"?"dark":"light"));setTheme("light");
+
+/* ---------- ponte app → web ---------- */
+const appWin=()=>$("#app").contentWindow,webWin=()=>$("#web").contentWindow;
+let observe=setInterval(()=>{try{const d=appWin().document;if(!done[0]&&(d.querySelector(".hero")||d.querySelector(".bnav"))){done[0]=true;guide();}}catch(e){clearInterval(observe);}},800);
+window.addEventListener("message",e=>{const d=e.data||{};
+  if(d.type==="safelist-sync"&&e.source===appWin()){
+    webWin().postMessage(d,"*");
+    const p=d.payload||{},n=["incidents","deliveries","permits","deviations","inspections","trainings"].reduce((s,k)=>s+(p[k]||[]).length,0);
+    if(n){done[0]=done[1]=done[2]=done[3]=true;}else{done[0]=done[2]=true;}guide();
+    const l=$("#link");$("#bubble").innerHTML=ic("refresh")+(n?n+" registro"+(n>1?"s":"")+" enviado"+(n>1?"s":"")+" à web":"Status do dia atualizado");l.classList.remove("pulse");void l.offsetWidth;l.classList.add("pulse");
+    setTimeout(()=>{$("#bubble").innerHTML=ic("refresh")+"Sincronização manual";},5000);}
+});
+$("#app").addEventListener("load",()=>setTheme(theme));$("#web").addEventListener("load",()=>setTheme(theme));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Safelist · Web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2f5f4;--surface:#fff;--surface-2:#f7faf9;--ink:#0f2421;--muted:#5d6f6b;--line:#e0e8e6;--line-strong:#cbd8d5;
+  --primary:#0b8a7e;--primary-strong:#076c63;--primary-soft:#e2f3f1;--primary-ink:#06574f;--on-primary:#fff;
+  --side:#0d2b27;--side-2:#143c36;--side-ink:#d6e8e4;--side-muted:#7fa39c;
+  --lime:#b9d63a;--lime-soft:#f1f7d6;--lime-ink:#55660a;
+  --amber:#9a5a04;--amber-soft:#fff1d6;--red:#bb3828;--red-soft:#fde8e4;--blue:#2c64ad;--blue-soft:#e5eefa;
+  --shadow:0 1px 2px rgba(16,36,33,.05),0 6px 20px rgba(16,36,33,.06);--shadow-lg:0 20px 50px rgba(10,30,27,.22);
+  --radius:14px;color-scheme:light
+}
+:root[data-theme="dark"]{
+  --bg:#0a1412;--surface:#111e1b;--surface-2:#162622;--ink:#e5eeec;--muted:#93a8a3;--line:#22342f;--line-strong:#2e4540;
+  --primary:#34c3b2;--primary-strong:#62d8ca;--primary-soft:#123b35;--primary-ink:#8de6da;--on-primary:#05221e;
+  --side:#071210;--side-2:#11241f;--side-ink:#cfe3df;--side-muted:#6f918a;
+  --lime-soft:#262e0e;--lime-ink:#d4ec70;--amber:#f0b957;--amber-soft:#33270e;--red:#f2836f;--red-soft:#3a1a15;--blue:#86adec;--blue-soft:#15243a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);color-scheme:dark
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{margin:0;line-height:1.25}
+p{margin:0}
+[hidden]{display:none!important}
+.ic{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.muted{color:var(--muted)}
+
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:256px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--side);color:var(--side-ink);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden;z-index:40}
+.brand{display:flex;align-items:center;gap:10px;padding:18px 18px 14px}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#19b3a3,#0b7d72);display:grid;place-items:center;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.logo .ic{width:19px;height:19px}
+.brand-name{font-weight:700;font-size:16px;letter-spacing:-.01em;color:#fff}
+.brand-sub{font-size:11px;color:var(--side-muted)}
+.nav{flex:1;overflow-y:auto;padding:4px 10px 12px;scrollbar-width:thin;scrollbar-color:#2a4d47 transparent}
+.nav-group{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--side-muted);padding:16px 10px 6px}
+.nav-item{width:100%;display:flex;align-items:center;gap:11px;padding:8px 10px;border:0;background:transparent;border-radius:9px;color:var(--side-ink);font-size:13.5px;text-align:left;cursor:pointer;opacity:.86;position:relative}
+.nav-item:hover{background:rgba(255,255,255,.05);opacity:1}
+.nav-item.active{background:var(--side-2);opacity:1;color:#fff;font-weight:600}
+.nav-item.active:before{content:"";position:absolute;left:-10px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--lime)}
+.nav-item .ic{width:17px;height:17px;opacity:.9}
+.nav-count{margin-left:auto;font-size:11px;font-weight:600;background:rgba(185,214,58,.16);color:var(--lime);border-radius:99px;padding:1px 7px}
+.side-foot{padding:12px;border-top:1px solid rgba(255,255,255,.07)}
+.ai-card{background:linear-gradient(160deg,#16443d,#0f322d);border:1px solid rgba(185,214,58,.18);border-radius:12px;padding:12px}
+.ai-card b{display:flex;align-items:center;gap:7px;color:#fff;font-size:13px}
+.ai-card b .ic{color:var(--lime);width:16px;height:16px}
+.ai-card p{font-size:11.5px;color:var(--side-muted);margin-top:5px}
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;height:62px;padding:0 24px;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.menu-btn{display:none}
+.crumbs{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap;min-width:0}
+.crumbs strong{color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.crumbs .ic{width:14px;height:14px}
+.search{position:relative;margin-left:auto;width:min(340px,32vw)}
+.search input{width:100%;height:38px;border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:0 12px 0 36px;font-size:13px;outline:none}
+.search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.search>.ic{position:absolute;left:11px;top:10px;color:var(--muted)}
+.search kbd{position:absolute;right:9px;top:9px;font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 5px;background:var(--surface);font-family:inherit}
+.search-results{position:absolute;top:44px;left:0;right:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;max-height:360px;overflow:auto}
+.search-results button{width:100%;display:flex;gap:10px;align-items:center;border:0;background:none;padding:8px;border-radius:8px;text-align:left;cursor:pointer}
+.search-results button:hover,.search-results button:focus{background:var(--surface-2);outline:none}
+.search-results small{display:block;color:var(--muted);font-size:11.5px}
+.icon-btn{position:relative;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;color:var(--ink)}
+.icon-btn:hover{background:var(--surface-2)}
+.dot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--surface)}
+.profile{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:4px 10px 4px 4px;cursor:pointer;text-align:left}
+.avatar{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--primary-soft);color:var(--primary-ink);font-weight:700;font-size:12px;flex:0 0 auto}
+.profile b{display:block;font-size:12.5px;font-weight:600;line-height:1.2}
+.profile small{display:block;font-size:11px;color:var(--muted);line-height:1.2}
+.popover{position:absolute;top:56px;right:24px;width:330px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:8px;z-index:50}
+.pop-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:8px 10px 6px}
+.pop-item{width:100%;display:flex;gap:10px;align-items:flex-start;border:0;background:none;text-align:left;padding:9px 10px;border-radius:9px;cursor:pointer}
+.pop-item:hover{background:var(--surface-2)}
+.pop-item small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}
+.pop-item.sel{background:var(--primary-soft)}
+.pop-item .ic{margin-top:1px;color:var(--primary)}
+.role-banner{display:flex;align-items:center;gap:10px;background:var(--blue-soft);color:var(--blue);padding:9px 24px;font-size:12.5px;border-bottom:1px solid var(--line)}
+.role-banner button{margin-left:auto}
+
+.content{padding:26px 28px 48px;max-width:1360px;width:100%}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.page-head h1{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.page-head p{color:var(--muted);margin-top:5px;max-width:720px}
+.page-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- controls ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.btn:hover{background:var(--surface-2)}
+.btn .ic{width:16px;height:16px}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary);font-weight:600}
+.btn.primary:hover{background:var(--primary-strong)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.sm{height:30px;padding:0 10px;font-size:12px;border-radius:8px}
+.btn.ai{border-color:color-mix(in srgb,var(--lime) 55%,var(--line));background:var(--lime-soft);color:var(--lime-ink)}
+.btn.danger{color:var(--red)}
+.field label,.lbl{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.field select,.field input,.field textarea,.inp{width:100%;min-height:40px;border:1px solid var(--line-strong);border-radius:10px;padding:8px 11px;background:var(--surface);font-size:13.5px;outline:none}
+.field textarea{resize:vertical;min-height:70px}
+.field select:focus,.field input:focus,.field textarea:focus,.inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px}
+.toolbar .field{min-width:200px}
+.toolbar-note{margin-left:auto;display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);padding-bottom:10px}
+.toolbar-note .ic{width:14px;height:14px}
+.filters{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:12px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:18px;box-shadow:var(--shadow)}
+.check{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--muted);margin:12px 0;cursor:pointer}
+.check input{margin-top:2px;accent-color:var(--primary);width:16px;height:16px}
+.msg{font-size:13px;color:var(--primary-ink);min-height:20px;margin-top:10px}
+.msg.warn{color:var(--amber)}
+
+/* ---------- cards ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);min-width:0}
+.card+.card,.grid-2+.card,.card+.grid-2,.grid-2+.grid-2{margin-top:16px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.card-head h2,.card>h2{font-size:15px;font-weight:600}
+.card>h2{margin-bottom:12px}
+.card-head .muted{font-size:12px}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.kpis.k3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);display:flex;gap:13px;align-items:flex-start}
+.kpi-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary);flex:0 0 auto}
+.kpi-ic.warn{background:var(--amber-soft);color:var(--amber)}.kpi-ic.danger{background:var(--red-soft);color:var(--red)}.kpi-ic.info{background:var(--blue-soft);color:var(--blue)}.kpi-ic.ai{background:var(--lime-soft);color:var(--lime-ink)}
+.kpi-label{font-size:12.5px;color:var(--muted)}
+.kpi-value{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-top:2px;line-height:1.2}
+.kpi-note{font-size:12px;color:var(--muted);margin-top:2px}
+.callout{display:flex;gap:12px;align-items:flex-start;background:var(--primary-soft);border:1px solid color-mix(in srgb,var(--primary) 18%,transparent);color:var(--ink);border-radius:12px;padding:13px 15px;font-size:13px;margin-bottom:16px}
+.callout>.ic{color:var(--primary);margin-top:1px}
+.callout.ai{background:var(--lime-soft);border-color:color-mix(in srgb,var(--lime) 35%,transparent)}
+.callout.ai>.ic{color:var(--lime-ink)}
+.callout.warn{background:var(--amber-soft);border-color:transparent}.callout.warn>.ic{color:var(--amber)}
+.empty{text-align:center;padding:42px 20px;background:var(--surface);border:1px dashed var(--line-strong);border-radius:var(--radius)}
+.empty .em-ic{width:52px;height:52px;border-radius:16px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;margin:0 auto 12px}
+.empty .em-ic .ic{width:24px;height:24px}
+.empty h3{font-size:15px;font-weight:600}
+.empty p{color:var(--muted);font-size:13px;margin:6px auto 0;max-width:460px}
+.empty .actions{margin-top:16px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.footnote{font-size:12px;color:var(--muted);margin-top:12px;display:flex;gap:6px;align-items:flex-start}
+.footnote .ic{width:14px;height:14px;margin-top:2px}
+.quick{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 12px 6px 8px;font-size:12.5px}
+.chip b{font-weight:600}
+.chip .ic{width:15px;height:15px;color:var(--amber)}
+
+/* ---------- tables ---------- */
+.table-card{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.card .table-card{border-radius:10px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+.tbl th{position:sticky;top:0;background:var(--surface-2);text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl tbody tr.click{cursor:pointer}
+.tbl tbody tr.click:hover td{background:var(--surface-2)}
+.tbl .nowrap{white-space:nowrap}
+.cell-main{font-weight:600}
+.cell-sub{display:block;color:var(--muted);font-size:12px;margin-top:2px;font-weight:400}
+.empty-row{text-align:center;color:var(--muted);padding:26px!important}
+.count{font-size:12.5px;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:99px;font-size:12px;font-weight:500;white-space:nowrap}
+.badge:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.ok{background:var(--primary-soft);color:var(--primary-ink)}
+.badge.warn{background:var(--amber-soft);color:var(--amber)}
+.badge.danger{background:var(--red-soft);color:var(--red)}
+.badge.info{background:var(--blue-soft);color:var(--blue)}
+.badge.ai{background:var(--lime-soft);color:var(--lime-ink)}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.h{background:var(--blue-soft);color:var(--blue);border-color:transparent}
+.tag.hia{background:var(--lime-soft);color:var(--lime-ink);border-color:transparent}
+.docs-bar{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.mini-track{width:56px;height:6px;border-radius:9px;background:var(--line);overflow:hidden}
+.mini-track i{display:block;height:100%;background:var(--primary);border-radius:9px}
+.mini-track i.warn{background:var(--amber)}
+.steps-dots{display:flex;gap:4px;align-items:center}
+.steps-dots i{width:16px;height:6px;border-radius:9px;background:var(--line)}
+.steps-dots i.on{background:var(--primary)}
+.steps-dots i.cur{background:var(--amber)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:none;padding:10px 14px;font-size:13.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tabs button:hover{color:var(--ink)}
+.tabs button.active{color:var(--primary-ink);border-bottom-color:var(--primary);font-weight:600}
+.tabs .nav-count{background:var(--primary-soft);color:var(--primary-ink)}
+
+/* ---------- dashboard ---------- */
+.bar-row{display:grid;grid-template-columns:110px minmax(60px,1fr) 56px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.bar-row:last-child{border-bottom:0}
+.track{height:9px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--primary),#1fb3a2);transition:width .5s}
+.bar-row span:last-child{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.list-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+.list-row:last-child{border-bottom:0}
+.list-row .l{display:flex;gap:11px;align-items:center;min-width:0}
+.list-ic{width:32px;height:32px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);flex:0 0 auto}
+.list-ic .ic{width:16px;height:16px}
+.attention{color:var(--amber);font-weight:500}
+
+/* ---------- calendar ---------- */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .dow{font-size:11px;color:var(--muted);text-align:center;padding:4px 0;font-weight:600}
+.cal .day{min-height:66px;border:1px solid var(--line);border-radius:9px;padding:5px 6px;font-size:12px;background:var(--surface)}
+.cal .day.out{background:transparent;border-style:dashed;opacity:.5}
+.cal .day.today{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary)}
+.cal .day b{font-weight:600;font-size:12px}
+.cal .ev{display:block;margin-top:3px;font-size:10.5px;line-height:1.25;padding:2px 5px;border-radius:5px;background:var(--primary-soft);color:var(--primary-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .ev.t{background:var(--blue-soft);color:var(--blue)}
+
+/* ---------- activities editor ---------- */
+.split{display:grid;grid-template-columns:290px minmax(0,1fr);gap:16px;align-items:start}
+.act-list{display:grid;gap:8px}
+.act-item{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 13px;text-align:left;cursor:pointer;display:block;width:100%}
+.act-item:hover{border-color:var(--line-strong)}
+.act-item.active{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.act-item b{display:block;font-size:13.5px}
+.act-item small{display:block;color:var(--muted);font-size:12px;margin:2px 0 7px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid .full{grid-column:1/-1}
+.check-tbl input[type=text]{width:100%;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 9px;background:var(--surface-2)}
+.check-tbl input[type=checkbox]{width:17px;height:17px;accent-color:var(--primary)}
+.actions-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.flow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.flow-step{border:1px solid var(--line);border-radius:11px;padding:10px;background:var(--surface-2);position:relative}
+.flow-step .n{font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:.05em}
+.flow-step b{display:block;font-size:12.5px;margin:3px 0 7px;line-height:1.3}
+.flow-step small{display:block;font-size:11px;color:var(--muted);margin-top:5px}
+
+/* ---------- steps (QR / desvios) ---------- */
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.step{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--primary);border-radius:12px;padding:13px}
+.step .n{font-size:10.5px;font-weight:700;color:var(--primary);letter-spacing:.06em}
+.step b{display:block;font-size:13px;margin:3px 0 4px}
+.step p{font-size:12px;color:var(--muted)}
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.qr-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
+.qr-card .qr-wrap{display:grid;place-items:center;background:#fff;border-radius:10px;padding:10px;border:1px solid var(--line)}
+.qr{color:#10221f;display:block}
+.qr-card b{font-size:13.5px}
+.qr-card small{color:var(--muted);font-size:12px;display:block}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(6,20,18,.42);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:var(--surface);z-index:70;transform:translateX(102%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+.drawer.on{transform:none}
+.dr-head{display:flex;gap:12px;align-items:flex-start;padding:18px 20px;border-bottom:1px solid var(--line)}
+.dr-head h2{font-size:17px}
+.dr-head p{color:var(--muted);font-size:12.5px;margin-top:3px}
+.dr-head .icon-btn{margin-left:auto}
+.dr-body{flex:1;overflow-y:auto;padding:18px 20px}
+.dr-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.dr-sec{margin-bottom:20px}
+.dr-sec h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kv div{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.kv small{display:block;font-size:11.5px;color:var(--muted)}
+.kv b{font-size:13px;font-weight:600}
+.timeline{border-left:2px solid var(--line);margin-left:6px;padding-left:16px}
+.timeline div{position:relative;padding-bottom:12px;font-size:13px}
+.timeline div:before{content:"";position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--surface);border:2px solid var(--primary)}
+.timeline small{display:block;color:var(--muted);font-size:11.5px}
+.risk-matrix{display:grid;grid-template-columns:28px repeat(5,1fr);gap:3px;font-size:11px}
+.risk-matrix .ax{display:grid;place-items:center;color:var(--muted);font-weight:600}
+.risk-matrix button{aspect-ratio:1.6;border:0;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;color:rgba(0,0,0,.6)}
+.risk-matrix button.sel{outline:3px solid var(--ink);outline-offset:-3px}
+.ishikawa{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ishikawa div{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:var(--surface-2);font-size:12.5px}
+.ishikawa b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:4px}
+.ishikawa li{margin:2px 0}
+.ishikawa ul{margin:0;padding-left:16px}
+.ishikawa li.ia{color:var(--lime-ink);font-style:italic}
+.whys{counter-reset:w;display:grid;gap:6px}
+.whys div{counter-increment:w;display:flex;gap:10px;align-items:baseline;font-size:13px;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:8px 11px}
+.whys div:before{content:counter(w) "º";font-weight:700;color:var(--primary);font-size:12px}
+.photo-strip{display:flex;gap:8px;flex-wrap:wrap}
+.photo{width:74px;height:58px;border-radius:9px;background:linear-gradient(135deg,#7aa59d,#355e57);display:grid;place-items:center;color:rgba(255,255,255,.85)}
+.photo .ic{width:18px;height:18px}
+
+/* ---------- toast ---------- */
+.toasts{position:fixed;bottom:22px;right:22px;display:grid;gap:10px;z-index:90}
+.toast{display:flex;gap:11px;align-items:flex-start;width:360px;max-width:calc(100vw - 32px);background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow-lg);font-size:13px;animation:tin .25s ease}
+.toast .ic{color:var(--lime);margin-top:1px}
+.toast button{margin-left:auto;background:none;border:0;color:var(--lime);font-weight:600;cursor:pointer;font-size:12.5px;white-space:nowrap}
+@keyframes tin{from{transform:translateY(10px);opacity:0}}
+.flash td{animation:flash 2.4s ease}
+@keyframes flash{0%,40%{background:var(--lime-soft)}}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){.flow{grid-template-columns:repeat(4,minmax(0,1fr))}.split{grid-template-columns:1fr}.act-list{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}}
+@media (max-width:980px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:272px;transform:translateX(-100%);transition:transform .25s}
+  .sidebar.open{transform:none;box-shadow:var(--shadow-lg)}
+  .menu-btn{display:grid}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .profile span.pt{display:none}
+}
+@media (max-width:720px){
+  .topbar{padding:0 14px;gap:8px}
+  .search{width:auto;flex:1}
+  .search kbd{display:none}
+  .content{padding:18px 16px 40px}
+  .filters{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+  .kpis,.kpis.k3{grid-template-columns:1fr}
+  .crumbs{display:none}
+  .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ishikawa{grid-template-columns:1fr 1fr}
+  .popover{right:12px;left:12px;width:auto}
+  .toolbar-note{margin-left:0}
+}
+@media (max-width:480px){.filters{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.cal .day{min-height:44px}.cal .ev{display:none}.cal .day.has:after{content:"";display:block;width:6px;height:6px;border-radius:50%;background:var(--primary);margin-top:4px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Menu principal">
+    <div class="brand">
+      <div class="logo" id="logo"></div>
+      <div><div class="brand-name">Safelist</div><div class="brand-sub">Gestão de segurança · Web</div></div>
+    </div>
+    <nav class="nav" id="nav" aria-label="Menu principal"></nav>
+    <div class="side-foot">
+      <div class="ai-card" id="ai-card"></div>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Abrir menu"></button>
+      <div class="crumbs"><span>Segurança do trabalho</span><span id="crumb-sep"></span><strong id="breadcrumb">Painel geral</strong></div>
+      <div class="search" id="search-box">
+        <span id="search-ic"></span>
+        <input id="global-search" type="search" placeholder="Buscar cadastro, ocorrência, documento…" aria-label="Busca global" autocomplete="off">
+        <kbd>/</kbd>
+        <div class="search-results" id="search-results" hidden></div>
+      </div>
+      <button class="icon-btn" id="bell-btn" type="button" aria-label="Notificações"><span id="bell-ic"></span><span class="dot" id="bell-dot"></span></button>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Alternar para tema escuro" title="Alternar tema"></button>
+      <button class="profile" id="profile-btn" type="button" aria-label="Perfil do usuário"><span class="avatar">TS</span><span class="pt"><b>Tiago Santos</b><small id="role-label">Administração</small></span></button>
+    </header>
+    <div class="role-banner" id="role-banner" hidden></div>
+    <main class="content" id="view"></main>
+  </div>
+</div>
+<div class="popover" id="notif-pop" hidden></div>
+<div class="popover" id="profile-pop" hidden></div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dr-head"><div><h2 id="dr-title"></h2><p id="dr-sub"></p></div><button class="icon-btn" id="dr-close" type="button" aria-label="Fechar painel"></button></div>
+  <div class="dr-body" id="dr-body"></div>
+  <div class="dr-foot" id="dr-foot"></div>
+</aside>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(function(){
+/* =========================================================
+   Utilidades
+   ========================================================= */
+const ICONS={
+  grid:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  building:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  truck:'<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  crane:'<path d="M4 21V5l9-2v4M4 7h16M17 7v5M15 12h4v3h-4zM2 21h10"/>',
+  qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>',
+  clipboard:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+  filecheck:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6"/><path d="m9 15 2 2 4-4"/>',
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  grad:'<path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/>',
+  hardhat:'<path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/><path d="M14 6a6 6 0 0 1 6 6v3"/><path d="M4 15v-3a6 6 0 0 1 6-6"/><rect x="2" y="15" width="20" height="4" rx="1"/>',
+  file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6M16 13H8M16 17H8M10 9H8"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  phone:'<rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M12 18h.01"/>',
+  sparkles:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15v4M17 17h4M5 3v3M3.5 4.5h3"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  chev:'<path d="m9 18 6-6-6-6"/>',
+  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+  refresh:'<path d="M21 12a9 9 0 0 1-15.36 6.36L3 16M3 12a9 9 0 0 1 15.36-6.36L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  printer:'<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/>',
+  eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7"/><circle cx="12" cy="12" r="3"/>',
+  history:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+  trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+  box:'<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+  filter:'<path d="M22 3H2l8 9.46V19l4 2v-8.54z"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'
+};
+const $=(s,el)=>(el||document).querySelector(s);
+const $$=(s,el)=>Array.from((el||document).querySelectorAll(s));
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ic=(n,c)=>'<svg class="ic '+(c||"")+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||"")+'</svg>';
+function tone(s){s=String(s).toLowerCase();
+  if(/não conforme|fora do prazo|vencid|recusad|abaixo|crític|bloquead/.test(s))return"danger";
+  if(/regular|aprovad|conclu|anexad|enviad|liberad|publicad|ativo|em dia|conforme|realizad|encerrad|sincronizad/.test(s))return"ok";
+  if(/aguard|pend|atenç|revis|confer|ajuste|investig|rascunho|andamento|execução|preenchimento|hoje|precisa/.test(s))return"warn";
+  return"info";}
+const badge=(s,t)=>'<span class="badge '+(t||tone(s))+'">'+esc(s)+'</span>';
+const docsParts=d=>{const m=String(d).match(/(\d+) de (\d+)/);return m?[+m[1],+m[2]]:[0,0];};
+const todayBR=()=>new Intl.DateTimeFormat("pt-BR").format(new Date(2026,10,1));
+const nowStamp=()=>new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short"}).format(new Date());
+function pageHead(t,d,a){return '<div class="page-head"><div><h1 id="page-title">'+t+'</h1><p>'+d+'</p></div><div class="page-actions">'+(a||"")+'</div></div>';}
+function kpi(label,value,note,icon,t,id){return '<div class="kpi"><div class="kpi-ic '+(t||"")+'">'+ic(icon)+'</div><div><div class="kpi-label">'+label+'</div><div class="kpi-value"'+(id?' id="'+id+'"':"")+'>'+value+'</div>'+(note!==null&&note!==undefined?'<div class="kpi-note"'+(id?' id="'+id+'-note"':"")+'>'+note+'</div>':"")+'</div></div>';}
+function table(cols,rows,o){o=o||{};
+  return '<div class="table-card"><table class="tbl"'+(o.label?' aria-label="'+o.label+'"':"")+(o.min?' style="min-width:'+o.min+'px"':"")+'><thead><tr>'+cols.map(c=>'<th>'+c.label+'</th>').join("")+'</tr></thead><tbody'+(o.id?' id="'+o.id+'"':"")+'>'+tbodyRows(cols,rows,o)+'</tbody></table></div>';}
+function tbodyRows(cols,rows,o){o=o||{};
+  if(!rows.length)return '<tr><td colspan="'+cols.length+'" class="empty-row">'+(o.empty||"Nenhum registro encontrado.")+'</td></tr>';
+  return rows.map((r,i)=>'<tr'+(o.click?' class="click" tabindex="0" data-i="'+i+'"':"")+'>'+cols.map(c=>'<td class="'+(c.cls||"")+'">'+(c.render?c.render(r,i):esc(r[c.key]))+'</td>').join("")+'</tr>').join("");}
+function tabsHtml(list,active){return '<div class="tabs" role="tablist">'+list.map(t=>'<button type="button" role="tab" data-tab="'+t[0]+'" aria-selected="'+(t[0]===active)+'" class="'+(t[0]===active?"active":"")+'">'+t[1]+(t[2]?' <span class="nav-count">'+t[2]+'</span>':"")+'</button>').join("")+'</div>';}
+function bindTabs(host,fn){$$("[data-tab]",host).forEach(b=>b.addEventListener("click",()=>{$$("[data-tab]",host).forEach(x=>{const a=x===b;x.classList.toggle("active",a);x.setAttribute("aria-selected",String(a));});fn(b.dataset.tab);}));}
+function bindRows(host,rows,fn){$$("tr.click",host).forEach(tr=>{const go=()=>fn(rows[+tr.dataset.i]);tr.addEventListener("click",go);tr.addEventListener("keydown",e=>{if(e.key==="Enter")go();});});}
+function selectHtml(id,opts,val){return '<select id="'+id+'">'+opts.map(o=>{const v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return '<option value="'+esc(v)+'"'+(v===val?" selected":"")+'>'+esc(l)+'</option>';}).join("")+'</select>';}
+const parkOpts=[["Todos","Todos os parques"],["Maral","Parque de Maral"],["Terra Santa","Parque de Terra Santa"]];
+function toast(msg,action,fn){const t=document.createElement("div");t.className="toast";t.innerHTML=ic("check")+'<span>'+msg+'</span>'+(action?'<button type="button">'+action+'</button>':"");if(action)t.querySelector("button").addEventListener("click",()=>{fn();t.remove();});$("#toasts").appendChild(t);setTimeout(()=>t.remove(),action?7000:4200);}
+function qrSvg(seed,size){const n=25;let h=2166136261;for(const c of seed){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}
+  const rnd=()=>{h^=h<<13;h>>>=0;h^=h>>>17;h^=h<<5;h>>>=0;return h/4294967296;};let r="";
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){if((x<8&&y<8)||(x>n-9&&y<8)||(x<8&&y>n-9))continue;if(rnd()>.52)r+='<rect x="'+x+'" y="'+y+'" width="1" height="1"/>';}
+  const f=(x,y)=>'<rect x="'+x+'" y="'+y+'" width="7" height="7"/><rect x="'+(x+1)+'" y="'+(y+1)+'" width="5" height="5" fill="#fff"/><rect x="'+(x+2)+'" y="'+(y+2)+'" width="3" height="3"/>';
+  return '<svg class="qr" viewBox="-1 -1 '+(n+2)+' '+(n+2)+'" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="img" aria-label="QR Code"><rect x="-1" y="-1" width="'+(n+2)+'" height="'+(n+2)+'" fill="#fff"/><g fill="currentColor">'+r+f(0,0)+f(n-7,0)+f(0,n-7)+'</g></svg>';}
+
+/* =========================================================
+   Dados demonstrativos
+   ========================================================= */
+const records=[
+  {park:"Maral",name:"Ventos do Norte Ltda.",id:"FOR-0031",kind:"Fornecedor",owner:"Contrato manutenção",docs:"8 de 8",state:"Regular",due:"18/11/2026"},
+  {park:"Maral",name:"Lucas Ferreira Costa",id:"PES-0218",kind:"Trabalhador",owner:"Ventos do Norte",docs:"6 de 6",state:"Regular",due:"02/12/2026"},
+  {park:"Maral",name:"Caminhonete 4x4",id:"VEI-0012 · MRL2A31",kind:"Veículo",owner:"Ventos do Norte",docs:"3 de 4",state:"Atenção",due:"Documento pendente"},
+  {park:"Maral",name:"Plataforma elevatória",id:"MAQ-0008",kind:"Máquina",owner:"Ventos do Norte",docs:"4 de 4",state:"Regular",due:"10/01/2027"},
+  {park:"Terra Santa",name:"Flexwind Serviços",id:"FOR-0007",kind:"Fornecedor",owner:"Contrato operação",docs:"7 de 8",state:"Atenção",due:"Documento pendente"},
+  {park:"Terra Santa",name:"Ana Paula Nascimento",id:"PES-0475",kind:"Trabalhador",owner:"Flexwind Serviços",docs:"5 de 5",state:"Regular",due:"22/12/2026"},
+  {park:"Terra Santa",name:"Veículo de apoio",id:"VEI-00482 · TSX4B80",kind:"Veículo",owner:"Flexwind Serviços",docs:"4 de 4",state:"Regular",due:"15/12/2026"},
+  {park:"Terra Santa",name:"Guindaste 50 t",id:"MAQ-0017",kind:"Máquina",owner:"Flexwind Serviços",docs:"2 de 3",state:"Atenção",due:"Documento pendente"}
+];
+const DOC_TYPES={
+  Fornecedor:["Contrato social","Cartão CNPJ","PGR da contratada","PCMSO","Apólice de seguro","Certidões negativas","ASO da equipe","Lista de trabalhadores alocados"],
+  Trabalhador:["ASO","Capacitação NR-35","Capacitação NR-10","Ficha de EPI","Integração de segurança","Ordem de serviço"],
+  Veículo:["CRLV","Apólice de seguro","Checklist pré-uso","Licença do motorista"],
+  Máquina:["ART de montagem","Laudo de inspeção periódica","Manual e plano de manutenção","Capacitação do operador"]
+};
+const kindIcon=k=>({Fornecedor:"building",Trabalhador:"user",Veículo:"truck",Máquina:"crane"}[k]||"file");
+let schedules=[
+  {name:"Inspeção de veículos",park:"Maral",type:"Veículo",freq:"Mensal",next:"04/11/2026",owner:"TST local",status:"Programada"},
+  {name:"Inspeção de máquinas",park:"Terra Santa",type:"Máquina",freq:"Trimestral",next:"15/11/2026",owner:"Supervisão",status:"Programada"},
+  {name:"Revisão de documentação",park:"Ambos os parques",type:"Documentação",freq:"Mensal",next:"01/11/2026",owner:"Segurança do trabalho",status:"Hoje"},
+  {name:"Inspeção de acessórios de içamento",park:"Terra Santa",type:"Acessório de içamento",freq:"Mensal",next:"08/11/2026",owner:"TST local",status:"Programada"},
+  {name:"DDS semanal",park:"Ambos os parques",type:"Treinamento",freq:"Semanal",next:"03/11/2026",owner:"Supervisão",status:"Programada"}
+];
+let activityItems=[
+  {name:"Trabalho em altura",park:"Ambos os parques",status:"Publicada · v3",risks:"Queda de altura; queda de objetos",controls:"Análise de risco; sistema de ancoragem; resgate disponível",checks:[{text:"Análise de risco revisada com a equipe",photo:true},{text:"Cinturão e talabarte inspecionados",photo:true},{text:"Ponto de ancoragem validado",photo:true}]},
+  {name:"Intervenção elétrica",park:"Ambos os parques",status:"Publicada · v2",risks:"Choque elétrico; arco elétrico",controls:"Desenergização; bloqueio e etiquetagem; teste de ausência de tensão",checks:[{text:"Permissão de trabalho liberada",photo:false},{text:"Bloqueio identificado e registrado",photo:true},{text:"Ausência de tensão confirmada",photo:true}]},
+  {name:"Deslocamento com veículo",park:"Terra Santa",status:"Publicada · v1",risks:"Colisão; atropelamento; saída de pista",controls:"Inspeção pré-uso; velocidade segura; rota autorizada",checks:[{text:"Checklist pré-uso realizado",photo:false},{text:"Veículo e documentação em situação regular",photo:true}]}
+];
+const PERMIT_STEPS=["Atividade","Avaliação de risco","Equipe","Verificações","Checklist","Validação"];
+let permits=[
+  {id:"LIB-0142",activity:"Trabalho em altura",park:"Terra Santa",place:"Aerogerador TS-07",team:["Ana Paula Nascimento","José Rian Silva de Oliveira","Carlos Mendes"],company:"Flexwind Serviços",step:5,status:"Aguardando validação",supervisor:"Marcos Lima",date:"01/11/2026 08:15",by:"Tiago Santos"},
+  {id:"LIB-0141",activity:"Intervenção elétrica",park:"Maral",place:"Subestação MR-SE1",team:["Lucas Ferreira Costa","Rafael Nunes"],company:"Ventos do Norte Ltda.",step:6,status:"Liberada",supervisor:"Paula Rocha",date:"01/11/2026 07:40",by:"Bruna Alves"},
+  {id:"LIB-0140",activity:"Deslocamento com veículo",park:"Terra Santa",place:"Acesso norte · TS-02 a TS-11",team:["José Rian Silva de Oliveira"],company:"Flexwind Serviços",step:2,status:"Em preenchimento",supervisor:"Marcos Lima",date:"01/11/2026 07:22",by:"Tiago Santos"},
+  {id:"LIB-0139",activity:"Trabalho a quente",park:"Maral",place:"Oficina de manutenção",team:["Lucas Ferreira Costa"],company:"Ventos do Norte Ltda.",step:6,status:"Encerrada",supervisor:"Paula Rocha",date:"31/10/2026 13:05",by:"Bruna Alves"}
+];
+const inspectionObjects=[{object:"Cinta de içamento",type:"Acessório de içamento",park:"Terra Santa",status:"Aguardando validação"},{object:"Manilha 3,25 t",type:"Acessório de içamento",park:"Terra Santa",status:"Regular"},{object:"Catraca de amarração",type:"Acessório de içamento",park:"Maral",status:"Inspeção pendente"},{object:"Plataforma elevatória",type:"Máquina",park:"Maral",status:"Regular"},{object:"Caminhonete 4x4",type:"Veículo leve",park:"Maral",status:"Inspeção pendente"},{object:"Caminhão munck",type:"Veículo pesado",park:"Terra Santa",status:"Regular"},{object:"Detector de tensão",type:"Equipamento",park:"Terra Santa",status:"Aguardando validação"}];
+let inspections=[
+  {id:"INS-TS-014",park:"Terra Santa",kind:"Máquina",object:"Guindaste 50 t",date:"30/10/2026",by:"Tiago Santos",result:"6 conformes · 0 NC",status:"Concluída"},
+  {id:"INS-MR-022",park:"Maral",kind:"Veículo",object:"Caminhonete 4x4",date:"31/10/2026",by:"Bruna Alves",result:"5 conformes · 1 NC",status:"Aguardando validação"},
+  {id:"INS-TS-019",park:"Terra Santa",kind:"Equipamento",object:"Detector de tensão",date:"28/10/2026",by:"Tiago Santos",result:"3 conformes · 1 NC",status:"Com pendência"},
+  {id:"INS-TS-020",park:"Terra Santa",kind:"Inspeção geral",object:"Trabalho em altura · TS-07",date:"01/11/2026",by:"Tiago Santos",result:"8 conformes · 0 NC",status:"Concluída"}
+];
+const GENERAL=[["Riscos & Operações","alert",["Atividade noturna","Grupo gerador","Trabalho em altura","Trabalho a quente"]],["Ambiente & Energia","target",["Local da atividade","Eletricidade","Espaço confinado"]],["Equipes & Estruturas","users",["Equipes","Painéis elétricos","Andaimes e escadas"]],["Gestão & Logística","layers",["Documentação","Lançamento de dados","Veículos"]]];
+const CHECK_MODELS=[["Máquinas","Verificações específicas do recurso.",12,"crane"],["Equipamentos","Condições e requisitos aplicáveis.",9,"box"],["Veículos leves","Inspeção orientada ao veículo.",14,"truck"],["Veículos pesados","Itens de verificação do recurso.",18,"truck"],["Cintas e manilhas","Conferência de acessórios de içamento.",7,"link"],["Caminhões","Verificações específicas.",16,"truck"],["Instalações elétricas","Condições e requisitos de segurança.",11,"target"]];
+let trainings=[
+  {id:"TRE-031",title:"NR-35 · Reciclagem trabalho em altura",park:"Terra Santa",date:"29/10/2026",hours:"8h",people:12,status:"Concluído",instr:"Instrutor externo"},
+  {id:"TRE-032",title:"DDS · Uso de cinturão paraquedista",park:"Maral",date:"31/10/2026",hours:"15 min",people:9,status:"Concluído",instr:"Bruna Alves"},
+  {id:"TRE-033",title:"NR-10 · Segurança em eletricidade",park:"Maral",date:"06/11/2026",hours:"40h",people:6,status:"Programado",instr:"Instrutor externo"},
+  {id:"TRE-034",title:"Integração de contratadas",park:"Terra Santa",date:"10/11/2026",hours:"4h",people:14,status:"Programado",instr:"Tiago Santos"}
+];
+let incidentRecords=[
+  {id:"INC-TS-026",date:"28/10/2026",park:"Terra Santa",type:"Quase acidente",title:"Quase colisão durante deslocamento",person:"Equipe de manutenção",status:"Em investigação",owner:"TST local"},
+  {id:"INC-TS-025",date:"26/10/2026",park:"Terra Santa",type:"Acidente veicular",title:"Colisão com danos materiais",person:"José Rian Silva de Oliveira",status:"Aguardando aprovação",owner:"Gestor imediato"},
+  {id:"INC-MR-018",date:"24/10/2026",park:"Maral",type:"Condição insegura",title:"Proteção temporária deslocada",person:"Inspeção de rotina",status:"Ação corretiva pendente",owner:"Supervisor da área"},
+  {id:"INC-MR-017",date:"20/10/2026",park:"Maral",type:"Acidente com lesão",title:"Lesão leve durante movimentação",person:"Trabalhador próprio",status:"Concluído",owner:"Equipe de segurança"},
+  {id:"INC-TS-024",date:"18/10/2026",park:"Terra Santa",type:"Incidente ambiental",title:"Pequeno vazamento contido",person:"Equipe de operação",status:"Aguardando aprovação",owner:"Gestor imediato"}
+];
+const NC_STEPS=["Desvio","Evidência","Ação","Responsável","Prazo","Validação","Histórico"];
+let deviations=[
+  {id:"NC-TS-001",title:"Guarda-corpo provisório incompleto",origin:"INS-TS-019",park:"Terra Santa",action:"Completar guarda-corpo e reinspecionar",resp:"Supervisor da área",due:"30/10/2026",step:4,status:"Fora do prazo"},
+  {id:"NC-MR-004",title:"Extintor sem lacre na caminhonete",origin:"INS-MR-022",park:"Maral",action:"Substituir extintor e registrar foto",resp:"Ventos do Norte",due:"05/11/2026",step:5,status:"Aguardando validação"},
+  {id:"NC-MR-005",title:"Proteção temporária deslocada",origin:"INC-MR-018",park:"Maral",action:"Reposicionar proteção e sinalizar área",resp:"Supervisor da área",due:"10/11/2026",step:3,status:"Em execução"},
+  {id:"NC-TS-002",title:"Talabarte com costura desgastada",origin:"LIB-0138",park:"Terra Santa",action:"Descartar talabarte e entregar novo EPI",resp:"Almoxarifado",due:"25/10/2026",step:7,status:"Concluída"}
+];
+let epiStock=[
+  {id:"cap",name:"Capacete classe B",ca:"CA 498",lot:"Válido até 06/2027",stock:24,min:8,park:"Maral",replace:"12 meses"},
+  {id:"belt",name:"Cinturão paraquedista",ca:"CA 39.125",lot:"Válido até 03/2027",stock:4,min:6,park:"Terra Santa",replace:"12 meses"},
+  {id:"glove",name:"Luva de proteção",ca:"CA 21.450",lot:"Válido até 09/2026",stock:12,min:10,park:"Maral",replace:"6 meses"},
+  {id:"boot",name:"Botina de segurança",ca:"CA 44.001",lot:"Válido até 12/2027",stock:18,min:6,park:"Terra Santa",replace:"12 meses"}
+];
+let epiDeliveries=[{date:"27/10/2026",worker:"Lucas Ferreira Costa",epi:"Capacete classe B",qty:1,reason:"Entrega inicial",park:"Maral"},{date:"26/10/2026",worker:"Ana Paula Nascimento",epi:"Luva de proteção",qty:2,reason:"Substituição",park:"Terra Santa"}];
+let users=[
+  {name:"Tiago Santos",email:"tiago.santos@empresa.com.br",role:"Técnico",unit:"Terra Santa",manager:"Marcos Lima",last:"Hoje, 07:42"},
+  {name:"Marcos Lima",email:"marcos.lima@empresa.com.br",role:"Supervisão",unit:"Terra Santa",manager:"Helena Prado",last:"Hoje, 08:03"},
+  {name:"Bruna Alves",email:"bruna.alves@empresa.com.br",role:"Técnico",unit:"Maral",manager:"Paula Rocha",last:"Ontem, 17:20"},
+  {name:"Paula Rocha",email:"paula.rocha@empresa.com.br",role:"Supervisão",unit:"Maral",manager:"Helena Prado",last:"Hoje, 07:10"},
+  {name:"Helena Prado",email:"helena.prado@empresa.com.br",role:"Gerência",unit:"Regional",manager:"—",last:"31/10/2026"},
+  {name:"Flexwind Serviços",email:"sst@flexwind.com.br",role:"Contratada",unit:"Terra Santa",manager:"Gestor do contrato",last:"30/10/2026"}
+];
+let accessRequests=[{who:"Bruna Alves",from:"Maral",to:"Terra Santa",reason:"Apoio na inspeção de içamento",date:"31/10/2026",status:"Aguardando aprovação"}];
+let devices=[
+  {user:"Tiago Santos",device:"Samsung Galaxy A54",park:"Terra Santa",last:"Hoje, 07:42",pending:2},
+  {user:"Bruna Alves",device:"Motorola G84",park:"Maral",last:"Hoje, 06:58",pending:0},
+  {user:"Carlos Mendes",device:"Samsung Galaxy XCover 6",park:"Terra Santa",last:"Ontem, 18:11",pending:1}
+];
+let notifications=[
+  {icon:"alert",title:"INC-TS-025 aguarda sua aprovação",sub:"Acidente veicular · Terra Santa",view:"incidentes"},
+  {icon:"filecheck",title:"LIB-0142 aguarda validação",sub:"Trabalho em altura · Aerogerador TS-07",view:"liberacoes"},
+  {icon:"file",title:"8 documentos vencem em 30 dias",sub:"Fornecedores e trabalhadores",view:"docs"},
+  {icon:"hardhat",title:"Cinturão paraquedista abaixo do mínimo",sub:"Terra Santa · 4 em estoque",view:"epis"}
+];
+let syncInfo={last:"Hoje, 07:42",pending:"2 registros aguardando envio"};
+
+/* =========================================================
+   Navegação, perfis e shell
+   ========================================================= */
+const NAV=[
+  ["Visão geral",[["overview","Painel geral","grid"],["programacoes","Programações","calendar"]]],
+  ["Consultas e cadastros",[["consulta","Consulta por parque","search"],["fornecedor","Fornecedores","building"],["trabalhador","Trabalhadores","users"],["ativos","Veículos e máquinas","truck"],["qrcodes","Status e QR Code","qr"]]],
+  ["Atividades de campo",[["atividades","Atividades e checklists","clipboard"],["liberacoes","Liberações","filecheck"],["inspecoes","Inspeções","shield"],["treinamentos","Treinamentos","grad"]]],
+  ["Ocorrências",[["incidentes","Incidentes e desvios","alert"]]],
+  ["Gestão",[["epis","EPIs","hardhat"],["docs","Documentos e requisitos","file"]]],
+  ["Administração",[["acessos","Usuários e acessos","lock"],["app","App Android · sincronização","phone"]]]
+];
+const LABEL={};NAV.forEach(g=>g[1].forEach(i=>LABEL[i[0]]=i[1]));
+const ROLES={
+  admin:{label:"Administração",desc:"Cadastros e configuração",views:"*"},
+  gerencia:{label:"Gerência",desc:"Indicadores, histórico e análise",views:["overview","programacoes","consulta","fornecedor","trabalhador","ativos","qrcodes","inspecoes","treinamentos","incidentes","epis","docs"]},
+  supervisao:{label:"Supervisão",desc:"Validação e acompanhamento",views:["overview","programacoes","consulta","fornecedor","trabalhador","ativos","qrcodes","atividades","liberacoes","inspecoes","treinamentos","incidentes","epis","docs","app"]},
+  tecnico:{label:"Técnico",desc:"Execução e registros",views:["consulta","fornecedor","trabalhador","ativos","qrcodes","atividades","liberacoes","inspecoes","treinamentos","incidentes","epis","app"]},
+  contratada:{label:"Contratada / Subcontratada",desc:"Recursos compatíveis com a responsabilidade",views:["docs","trabalhador","ativos"]}
+};
+const state={view:"overview",role:"admin",theme:"light"};
+const allowed=v=>ROLES[state.role].views==="*"||ROLES[state.role].views.includes(v);
+function counts(){return{incidentes:incidentRecords.filter(r=>r.status==="Aguardando aprovação").length+deviations.filter(d=>d.status==="Fora do prazo").length,liberacoes:permits.filter(p=>p.status==="Aguardando validação").length,docs:3,acessos:accessRequests.filter(a=>a.status==="Aguardando aprovação").length};}
+function renderNav(){const c=counts();
+  $("#nav").innerHTML=NAV.map(g=>{const items=g[1].filter(i=>allowed(i[0]));if(!items.length)return"";return '<div class="nav-group">'+g[0]+'</div>'+items.map(i=>'<button class="nav-item'+(i[0]===state.view?" active":"")+'" type="button" data-view="'+i[0]+'"'+(i[0]===state.view?' aria-current="page"':"")+'>'+ic(i[2])+'<span>'+i[1]+'</span>'+(c[i[0]]?'<span class="nav-count">'+c[i[0]]+'</span>':"")+'</button>').join("");}).join("");
+  $$(".nav-item").forEach(b=>b.addEventListener("click",()=>{go(b.dataset.view);$("#sidebar").classList.remove("open");$("#scrim").classList.remove("on");}));}
+function go(view,opts){if(!LABEL[view]||!allowed(view))view=(ROLES[state.role].views==="*"?["overview"]:ROLES[state.role].views)[0];
+  state.view=view;state.opts=opts||{};closeDrawer();renderNav();$("#breadcrumb").textContent=LABEL[view];
+  try{history.replaceState(null,"","#"+view);}catch(e){}
+  const host=$("#view");host.innerHTML="";host.scrollTop=0;window.scrollTo(0,0);(VIEWS[view]||VIEWS.overview)(host,state.opts);}
+
+/* ---------- drawer ---------- */
+function openDrawer(title,sub,body,foot,mount){$("#dr-title").textContent=title;$("#dr-sub").innerHTML=sub||"";$("#dr-body").innerHTML=body;$("#dr-foot").innerHTML=foot||"";$("#dr-foot").hidden=!foot;
+  $("#drawer").classList.add("on");$("#drawer").setAttribute("aria-hidden","false");$("#scrim").classList.add("on");if(mount)mount($("#drawer"));setTimeout(()=>$("#dr-close").focus(),50);}
+function closeDrawer(){$("#drawer").classList.remove("on");$("#drawer").setAttribute("aria-hidden","true");if(!$("#sidebar").classList.contains("open"))$("#scrim").classList.remove("on");}
+
+/* =========================================================
+   Views
+   ========================================================= */
+const VIEWS={};
+
+/* ---------- Painel geral ---------- */
+VIEWS.overview=function(host){
+  host.innerHTML=pageHead("Painel geral","Visão consolidada da documentação, inspeções, incidentes e EPIs. Acompanhe rapidamente a situação dos parques e os itens que pedem atenção.",'<button class="btn" type="button" data-go="consulta">'+ic("search")+'Consultar parque</button><button class="btn primary" type="button" data-go="programacoes">'+ic("calendar")+'Programações</button>')+
+  '<div class="quick"><span class="chip">'+ic("file")+'<b>Documentos a vencer</b> 8 documentos nos próximos 30 dias</span><span class="chip">'+ic("calendar")+'<b>Inspeções próximas</b> 4 programadas para esta semana</span><span class="chip">'+ic("alert")+'<b>Pendências</b> 2 cadastros aguardam regularização</span></div>'+
+  '<div class="toolbar"><div class="field"><label for="dashboard-park">Parque</label>'+selectHtml("dashboard-park",parkOpts,"Todos")+'</div><div class="field"><label for="dashboard-period">Período das inspeções e ocorrências</label>'+selectHtml("dashboard-period",[["30","Últimos 30 dias"],["90","Últimos 90 dias"],["365","Ano atual"]],"30")+'</div><div class="toolbar-note">'+ic("refresh")+'<span id="dash-sync">Dados do app sincronizados: '+syncInfo.last+'</span></div></div>'+
+  '<div class="kpis" aria-label="Indicadores gerais">'+kpi("Cadastros no parque","8","Fornecedores, pessoas e ativos","layers","","dash-records")+kpi("Documentos aprovados","39/42","3 pendentes","filecheck","","dash-docs")+kpi("Inspeções concluídas","9/12","75% no período","shield","info","dash-inspections")+kpi("Não conformidades abertas","5","2 fora do prazo","alert","warn","dash-nc")+'</div>'+
+  '<div class="grid-2"><section class="card"><div class="card-head"><h2>Documentação por tipo</h2><span class="muted">aprovados / exigidos</span></div><div id="dash-doc-bars" aria-live="polite"></div></section><section class="card"><div class="card-head"><h2>Resumo por parque</h2></div><div id="dash-park"></div></section></div>'+
+  '<section class="card"><div class="card-head"><h2>Itens que pedem atenção</h2><span class="muted" id="dash-att-count"></span></div><div id="dash-attention"></div></section>'+
+  '<div class="grid-2"><section class="card"><div class="card-head"><h2>Inspeções programadas</h2><button class="btn sm ghost" type="button" data-go="inspecoes">Ver inspeções '+ic("chev")+'</button></div><div id="dash-schedule"></div></section><section class="card"><div class="card-head"><h2>Alertas de EPI</h2><button class="btn sm ghost" type="button" data-go="epis">Ver estoque '+ic("chev")+'</button></div><div id="dash-ppe"></div></section></div>'+
+  '<p class="footnote">'+ic("info")+'Indicadores e registros são demonstrativos. A seleção de parque atualiza os resumos e as pendências.</p>';
+  const inspectionStats={"30":{"Todos":[9,12],"Maral":[5,6],"Terra Santa":[4,6]},"90":{"Todos":[24,30],"Maral":[12,15],"Terra Santa":[12,15]},"365":{"Todos":[72,88],"Maral":[36,44],"Terra Santa":[36,44]}};
+  const sum=(g,i)=>g.reduce((s,r)=>s+docsParts(r.docs)[i],0);
+  function update(){
+    const park=$("#dashboard-park").value,period=$("#dashboard-period").value;
+    const selected=records.filter(r=>park==="Todos"||r.park===park);
+    const approved=sum(selected,0),required=sum(selected,1),pending=required-approved,stat=inspectionStats[period][park];
+    const ncCount=park==="Todos"?5:park==="Maral"?2:3,overdue=park==="Todos"?2:1;
+    $("#dash-records").textContent=selected.length;
+    $("#dash-docs").textContent=approved+"/"+required;$("#dash-docs-note").textContent=pending+" documentos pendentes";
+    $("#dash-inspections").textContent=stat[0]+"/"+stat[1];$("#dash-inspections-note").textContent=Math.round(stat[0]/stat[1]*100)+"% concluídas no período";
+    $("#dash-nc").textContent=ncCount;$("#dash-nc-note").textContent=overdue+" fora do prazo";
+    $("#dash-doc-bars").innerHTML=["Fornecedor","Trabalhador","Veículo","Máquina"].map(type=>{const g=selected.filter(r=>r.kind===type),ok=sum(g,0),all=sum(g,1),pct=all?Math.round(ok/all*100):0;
+      return '<div class="bar-row"><span>'+type+'</span><div class="track" role="progressbar" aria-label="'+type+' com documentos aprovados" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100"><div class="fill" style="width:'+pct+'%"></div></div><span>'+ok+'/'+all+'</span></div>';}).join("");
+    const parks=park==="Todos"?["Maral","Terra Santa"]:[park];
+    $("#dash-park").innerHTML=table([{label:"Parque",render:r=>'<span class="cell-main">'+r.n+'</span>'},{label:"Cadastros",key:"c"},{label:"Docs aprovados",render:r=>'<div class="docs-bar"><div class="mini-track"><i style="width:'+Math.round(r.ok/r.all*100)+'%"></i></div>'+r.ok+'/'+r.all+'</div>'},{label:"Pendentes",render:r=>r.all-r.ok?'<span class="attention">'+(r.all-r.ok)+'</span>':"0"}],
+      parks.map(n=>{const g=records.filter(r=>r.park===n);return{n:n,c:g.length,ok:sum(g,0),all:sum(g,1)};}));
+    const att=selected.filter(r=>r.state==="Atenção");$("#dash-att-count").textContent=att.length+" cadastros";
+    $("#dash-attention").innerHTML=table([{label:"Cadastro",render:r=>'<span class="cell-main">'+esc(r.name)+'</span><span class="cell-sub">'+esc(r.id)+'</span>'},{label:"Parque",key:"park"},{label:"Tipo",key:"kind"},{label:"Documentos",render:r=>docsParts(r.docs).join("/")},{label:"Próximo vencimento",render:r=>'<span class="attention">'+esc(r.due)+'</span>'}],att,{click:true,empty:"Nenhum item pede atenção neste filtro."});
+    bindRows($("#dash-attention"),att,openRecord);
+    const sched=park==="Todos"?[["Maral","5 de 6","1 aguardando"],["Terra Santa","4 de 6","2 aguardando"]]:park==="Maral"?[["Maral","5 de 6","1 aguardando"]]:[["Terra Santa","4 de 6","2 aguardando"]];
+    $("#dash-schedule").innerHTML=sched.map(x=>{const p=x[1].split(" de ");return '<div class="bar-row"><span>'+x[0]+'</span><div class="track"><div class="fill" style="width:'+Math.round(p[0]/p[1]*100)+'%"></div></div><span>'+p[0]+'/'+p[1]+'</span></div><div class="kpi-note" style="margin:-4px 0 6px">'+x[1]+' concluídas · '+x[2]+'</div>';}).join("");
+    const ppe=park==="Maral"?[]:park==="Terra Santa"?[["Cinturão paraquedista","4 em estoque · mínimo 6"]]:[["Cinturão paraquedista","Terra Santa · 4 em estoque · mínimo 6"]];
+    $("#dash-ppe").innerHTML=ppe.length?ppe.map(i=>'<div class="list-row"><div class="l"><span class="list-ic">'+ic("hardhat")+'</span><b>'+i[0]+'</b></div><span class="attention">'+i[1]+'</span></div>').join(""):'<p class="muted">Nenhum alerta de estoque neste filtro.</p>';
+  }
+  $("#dashboard-park").addEventListener("change",update);$("#dashboard-period").addEventListener("change",update);update();
+};
+
+/* ---------- Programações ---------- */
+VIEWS.programacoes=function(host){
+  host.innerHTML=pageHead("Programações","Configure inspeções periódicas pela web e acompanhe prazos por parque. As programações aparecem para a equipe no app de campo.",'<button class="btn primary" type="button" id="new-sched">'+ic("plus")+'Nova programação</button>')+
+  '<section class="card" id="sched-form" hidden><div class="card-head"><h2>Nova programação</h2></div><div class="form-grid"><div class="field"><label for="sf-name">Programação</label><input id="sf-name" placeholder="Ex.: Inspeção de extintores"></div><div class="field"><label for="sf-park">Parque</label>'+selectHtml("sf-park",["Maral","Terra Santa","Ambos os parques"])+'</div><div class="field"><label for="sf-type">Tipo de objeto</label>'+selectHtml("sf-type",["Veículo","Máquina","Equipamento","Acessório de içamento","Documentação","Treinamento"])+'</div><div class="field"><label for="sf-freq">Frequência</label>'+selectHtml("sf-freq",["Semanal","Mensal","Trimestral","Semestral","Anual"],"Mensal")+'</div><div class="field"><label for="sf-date">Primeira data</label><input id="sf-date" type="date" value="2026-11-12"></div><div class="field"><label for="sf-owner">Responsável</label>'+selectHtml("sf-owner",["TST local","Supervisão","Segurança do trabalho","Almoxarifado"])+'</div></div><div class="actions-row"><button class="btn primary" type="button" id="sf-save">Salvar programação</button><button class="btn ghost" type="button" id="sf-cancel">Cancelar</button></div></section>'+
+  '<div class="grid-2" style="grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);margin-bottom:16px"><section class="card"><div class="card-head"><h2>Programações ativas</h2><span class="count" id="sched-count"></span></div><div id="sched-table"></div></section><section class="card"><div class="card-head"><h2>Novembro de 2026</h2></div><div class="cal" id="sched-cal"></div></section></div>';
+  function draw(){
+    $("#sched-count").textContent=schedules.length+" programações";
+    $("#sched-table").innerHTML=table([{label:"Programação",render:r=>'<span class="cell-main">'+esc(r.name)+'</span><span class="cell-sub">'+esc(r.type)+' · '+esc(r.owner)+'</span>'},{label:"Parque",key:"park"},{label:"Frequência",key:"freq"},{label:"Próxima",key:"next",cls:"nowrap"},{label:"Status",render:r=>badge(r.status)}],schedules,{min:560});
+    const ev={};schedules.forEach(s=>{const d=+s.next.split("/")[0];if(s.next.endsWith("/11/2026"))(ev[d]=ev[d]||[]).push(s);});
+    const dows=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];let h=dows.map(d=>'<div class="dow">'+d+'</div>').join("");
+    for(let d=1;d<=30;d++){const e=ev[d]||[];h+='<div class="day'+(d===1?" today":"")+(e.length?" has":"")+'"><b>'+d+'</b>'+e.map(s=>'<span class="ev'+(s.type==="Treinamento"?" t":"")+'" title="'+esc(s.name)+'">'+esc(s.name)+'</span>').join("")+'</div>';}
+    for(let d=0;d<5;d++)h+='<div class="day out"></div>';
+    $("#sched-cal").innerHTML=h;}
+  draw();
+  $("#new-sched").addEventListener("click",()=>{$("#sched-form").hidden=false;$("#sf-name").focus();});
+  $("#sf-cancel").addEventListener("click",()=>$("#sched-form").hidden=true);
+  $("#sf-save").addEventListener("click",()=>{const name=$("#sf-name").value.trim()||"Nova programação";const d=$("#sf-date").value.split("-").reverse().join("/");
+    schedules.push({name:name,park:$("#sf-park").value,type:$("#sf-type").value,freq:$("#sf-freq").value,next:d,owner:$("#sf-owner").value,status:"Programada"});$("#sched-form").hidden=true;$("#sf-name").value="";draw();toast("Programação criada e enviada às equipes no app (demonstração).");});
+};
+
+/* ---------- Consulta por parque e cadastros ---------- */
+function openRecord(r){
+  const p=docsParts(r.docs),names=DOC_TYPES[r.kind]||[];
+  const docs=names.slice(0,p[1]).map((n,i)=>({n:n,ok:i<p[0],v:i<p[0]?["18/11/2026","02/12/2026","10/01/2027","15/03/2027","22/12/2026","30/06/2027","12/02/2027","05/05/2027"][i%8]:"—"}));
+  openDrawer(r.name,ic(kindIcon(r.kind))+" "+esc(r.kind)+" · "+esc(r.id)+" · Parque de "+esc(r.park),
+    '<div class="dr-sec" style="display:flex;gap:16px;align-items:center"><div style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px">'+qrSvg(r.id,112)+'</div><div><div style="margin-bottom:8px">'+badge(r.state==="Atenção"?"Precisa de atenção":"Documentação regular",r.state==="Atenção"?"warn":"ok")+'</div><p class="muted" style="font-size:12.5px">O QR permanece fixo. A leitura no app consulta o status atualizado deste cadastro.</p></div></div>'+
+    '<div class="dr-sec"><h3>Resumo</h3><div class="kv"><div><small>Empresa / responsável</small><b>'+esc(r.owner)+'</b></div><div><small>Documentos aprovados</small><b>'+p[0]+' de '+p[1]+'</b></div><div><small>Próximo vencimento</small><b>'+esc(r.due)+'</b></div><div><small>Última leitura de QR</small><b>Hoje, 07:58 · app</b></div></div></div>'+
+    '<div class="dr-sec"><h3>Documentos exigidos</h3>'+table([{label:"Documento",key:"n"},{label:"Validade",key:"v",cls:"nowrap"},{label:"Status",render:d=>d.ok?badge("Aprovado"):badge("Pendente")}],docs,{min:380})+'</div>'+
+    '<div class="dr-sec"><h3>Histórico</h3><div class="timeline"><div>Leitura de QR em campo<small>Hoje, 07:58 · Tiago Santos · App Android</small></div><div>Documento conferido pela segurança<small>27/10/2026 · Equipe de segurança</small></div><div>Cadastro criado<small>12/03/2026 · Administração regional</small></div></div></div>',
+    '<button class="btn" type="button" id="rec-print">'+ic("printer")+'Imprimir etiqueta QR</button>'+(r.state==="Atenção"?'<button class="btn primary" type="button" id="rec-req">'+ic("send")+'Solicitar documento pendente</button>':""),
+    d=>{$("#rec-print",d).addEventListener("click",()=>toast("Etiqueta QR enviada para impressão (demonstração)."));const q=$("#rec-req",d);if(q)q.addEventListener("click",()=>{toast("Solicitação enviada para "+r.owner+" pela área do fornecedor.");closeDrawer();});});
+}
+function queryView(host,key){
+  const entityKind=key==="fornecedor"?"Fornecedor":key==="trabalhador"?"Trabalhador":key==="ativos"?"Ativos":"";
+  const isConsulta=key==="consulta";
+  const desc=isConsulta?"Consulte documentos de fornecedores, trabalhadores, veículos e máquinas por local de operação. Cadastros são criados preferencialmente pela equipe de segurança local ou pela administração regional.":"Cadastros de "+LABEL[key].toLowerCase()+" com a situação documental em todos os parques liberados para o seu perfil.";
+  host.innerHTML=pageHead(isConsulta?"Consulta por parque":LABEL[key],desc,isConsulta?"":'<button class="btn" type="button" id="q-import">'+ic("upload")+'Importar planilha</button><button class="btn primary" type="button" id="q-new">'+ic("plus")+'Novo cadastro</button>')+
+  '<section aria-label="Filtros de consulta"><div class="filters"><div class="field"><label for="park-filter">Parque</label><select id="park-filter">'+(isConsulta?'<option value="">Selecione um parque</option>':'<option value="Todos">Todos os parques</option>')+'<option value="Maral">Parque de Maral</option><option value="Terra Santa">Parque de Terra Santa</option></select></div><div class="field"><label for="kind-filter">Tipo de cadastro</label>'+selectHtml("kind-filter",[["Todos","Todos os tipos"],["Fornecedor","Fornecedores"],["Trabalhador","Trabalhadores"],["Veículo","Veículos"],["Máquina","Máquinas"],["Ativos","Veículos e máquinas"]],entityKind||"Todos")+'</div><div class="field"><label for="state-filter">Situação documental</label>'+selectHtml("state-filter",[["Todas","Todas as situações"],["Regular","Regular"],["Atenção","Precisa de atenção"]],"Todas")+'</div><button id="apply-filter" class="btn primary" type="button" style="height:40px">'+ic("search")+'Consultar</button></div></section>'+
+  '<div id="query-empty" class="empty" role="status"><div class="em-ic">'+ic("pin")+'</div><h3 id="query-empty-title">Selecione um parque e clique em Consultar</h3><p id="query-empty-text">Você verá os cadastros daquele local com a situação documental. O TST pode solicitar consulta a outras unidades. O superior aprova o acesso, que fica registrado.</p><div class="actions"><button id="query-access-request" class="btn" type="button">'+ic("lock")+'Solicitar acesso a outra unidade</button></div><p id="query-access-message" class="msg" aria-live="polite"></p></div>'+
+  '<div id="query-results" hidden><div class="kpis k3" aria-label="Resumo dos resultados">'+kpi("Cadastros no filtro","0",null,"layers","","metric-total")+kpi("Documentação regular","0",null,"check","","metric-ok")+kpi("Precisam de atenção","0",null,"alert","warn","metric-pending")+'</div>'+
+  '<div class="card-head" style="margin-top:6px"><h2>Cadastros encontrados</h2><span id="results-count" class="count" aria-live="polite">0 resultados</span></div><div id="result-table"></div>'+
+  '<p class="footnote">'+ic("qr")+'O QR permanece fixo. A leitura no app consulta o status atualizado deste cadastro. Clique em uma linha para ver documentos e QR.</p></div>';
+  let querySubmitted=!isConsulta;
+  function render(){
+    const park=$("#park-filter").value,kind=$("#kind-filter").value,st=$("#state-filter").value;
+    const canShow=querySubmitted&&Boolean(park);$("#query-empty").hidden=canShow;$("#query-results").hidden=!canShow;if(!canShow)return;
+    const rows=records.filter(r=>(park==="Todos"||r.park===park)&&(kind==="Todos"||r.kind===kind||(kind==="Ativos"&&(r.kind==="Veículo"||r.kind==="Máquina")))&&(st==="Todas"||r.state===st));
+    $("#result-table").innerHTML=table([
+      {label:"Cadastro",render:r=>'<div style="display:flex;gap:10px;align-items:center"><span class="list-ic">'+ic(kindIcon(r.kind))+'</span><span><span class="cell-main">'+esc(r.name)+'</span><span class="cell-sub">'+esc(r.park)+' · '+esc(r.id)+'</span></span></div>'},
+      {label:"Tipo",key:"kind"},{label:"Empresa / responsável",key:"owner"},
+      {label:"Documentos",render:r=>{const p=docsParts(r.docs);return '<div class="docs-bar"><div class="mini-track"><i class="'+(p[0]<p[1]?"warn":"")+'" style="width:'+Math.round(p[0]/p[1]*100)+'%"></i></div>'+esc(r.docs)+'</div>';}},
+      {label:"Status",render:r=>badge(r.state,r.state==="Atenção"?"warn":"ok")},
+      {label:"Próximo vencimento",render:r=>r.state==="Atenção"?'<span class="attention">'+esc(r.due)+'</span>':esc(r.due),cls:"nowrap"}],rows,{click:true,label:"Cadastros e status da documentação",empty:"Nenhum cadastro com esses filtros."});
+    bindRows($("#result-table"),rows,openRecord);
+    const ok=rows.filter(r=>r.state==="Regular").length;
+    $("#metric-total").textContent=rows.length;$("#metric-ok").textContent=ok;$("#metric-pending").textContent=rows.length-ok;
+    $("#results-count").textContent=rows.length+" "+(rows.length===1?"resultado":"resultados");}
+  $("#apply-filter").addEventListener("click",()=>{if(!$("#park-filter").value){$("#query-empty-title").textContent="Escolha um parque antes de consultar.";return;}querySubmitted=true;render();});
+  $("#query-access-request").addEventListener("click",()=>{accessRequests.unshift({who:"Tiago Santos",from:"Terra Santa",to:"Maral",reason:"Consulta de cadastros",date:todayBR(),status:"Aguardando aprovação"});$("#query-access-message").textContent="Solicitação de acesso a outra unidade registrada para análise do superior (demonstração).";renderNav();});
+  ["#park-filter","#kind-filter","#state-filter"].forEach(id=>$(id).addEventListener("change",()=>{querySubmitted=false;$("#query-empty-title").textContent="Filtros alterados";$("#query-empty-text").textContent="Clique em Consultar para atualizar os resultados.";render();}));
+  const n=$("#q-new");if(n)n.addEventListener("click",()=>openNewRecord(entityKind));
+  const im=$("#q-import");if(im)im.addEventListener("click",()=>toast("Importação por planilha disponível no fluxo demonstrativo."));
+  render();
+}
+function openNewRecord(kind){
+  const k=kind==="Ativos"?"Veículo":kind;
+  openDrawer("Novo cadastro","Os documentos exigidos são definidos pelo tipo de cadastro.",
+    '<div class="form-grid"><div class="field full"><label for="nr-kind">Tipo de cadastro</label>'+selectHtml("nr-kind",["Fornecedor","Trabalhador","Veículo","Máquina"],k)+'</div><div class="field full"><label for="nr-name">Nome / identificação</label><input id="nr-name" placeholder="Ex.: Caminhão pipa"></div><div class="field"><label for="nr-park">Parque</label>'+selectHtml("nr-park",["Maral","Terra Santa"])+'</div><div class="field"><label for="nr-owner">Empresa / responsável</label>'+selectHtml("nr-owner",["Ventos do Norte","Flexwind Serviços"])+'</div></div><div class="dr-sec" style="margin-top:18px"><h3>Documentos exigidos</h3><div id="nr-docs"></div></div>',
+    '<button class="btn ghost" type="button" id="nr-cancel">Cancelar</button><button class="btn primary" type="button" id="nr-save">Criar cadastro e gerar QR</button>',
+    d=>{const docs=()=>$("#nr-docs",d).innerHTML=(DOC_TYPES[$("#nr-kind",d).value]||[]).map(x=>'<div class="list-row"><div class="l"><span class="list-ic">'+ic("file")+'</span>'+x+'</div>'+badge("Aguardando envio","warn")+'</div>').join("");docs();
+      $("#nr-kind",d).addEventListener("change",docs);$("#nr-cancel",d).addEventListener("click",closeDrawer);
+      $("#nr-save",d).addEventListener("click",()=>{const kk=$("#nr-kind",d).value,tot=(DOC_TYPES[kk]||[]).length,pre={Fornecedor:"FOR",Trabalhador:"PES",Veículo:"VEI",Máquina:"MAQ"}[kk];
+        records.push({park:$("#nr-park",d).value,name:$("#nr-name",d).value.trim()||"Novo cadastro",id:pre+"-0"+(100+records.length),kind:kk,owner:$("#nr-owner",d).value,docs:"0 de "+tot,state:"Atenção",due:"Documento pendente"});
+        closeDrawer();go(state.view);toast("Cadastro criado. O QR já pode ser impresso e o fornecedor foi avisado dos documentos exigidos.");});});
+}
+VIEWS.consulta=h=>queryView(h,"consulta");VIEWS.fornecedor=h=>queryView(h,"fornecedor");VIEWS.trabalhador=h=>queryView(h,"trabalhador");VIEWS.ativos=h=>queryView(h,"ativos");
+
+/* ---------- Status e QR Code ---------- */
+VIEWS.qrcodes=function(host){
+  const steps=[["01","Consultar","Leitura do QR Code no local do recurso ou atividade."],["02","Verificar status","Visualização imediata das condições atuais do item."],["03","Identificar pendência","Detecção de falhas ou requisitos não atendidos."],["04","Registrar NC","Abertura rápida de não conformidade no sistema."],["05","Acompanhar","Monitoramento da tratativa e resolução final."]];
+  host.innerHTML=pageHead("Status e QR Code","Consulta rápida do estado de uma atividade ou recurso. O QR Code funciona como ponto de acesso rápido à informação de status definida para o processo.",'<button class="btn primary" type="button" id="qr-print-all">'+ic("printer")+'Imprimir etiquetas</button>')+
+  '<div class="steps">'+steps.map(s=>'<div class="step"><div class="n">PASSO '+s[0]+'</div><b>'+s[1]+'</b><p>'+s[2]+'</p></div>').join("")+'</div>'+
+  '<div class="callout">'+ic("refresh")+'<div>A sincronização dos dados é feita na primeira conexão do dia, com rede de dados ou wi-fi. Qualquer consulta diária fica submetida ao status daquele dia (validações, treinamentos, NCs e atividades em aberto no mesmo componente). Sem conexão, o app mostra a data da última atualização guardada.</div></div>'+
+  '<div class="toolbar"><div class="field"><label for="qr-park">Parque</label>'+selectHtml("qr-park",parkOpts,"Todos")+'</div><div class="field"><label for="qr-kind">Tipo</label>'+selectHtml("qr-kind",[["Todos","Todos os tipos"],"Fornecedor","Trabalhador","Veículo","Máquina"],"Todos")+'</div></div><div class="qr-grid" id="qr-grid"></div>';
+  function draw(){const p=$("#qr-park").value,k=$("#qr-kind").value;const rows=records.filter(r=>(p==="Todos"||r.park===p)&&(k==="Todos"||r.kind===k));
+    $("#qr-grid").innerHTML=rows.map((r,i)=>'<div class="qr-card"><div class="qr-wrap">'+qrSvg(r.id,124)+'</div><div><b>'+esc(r.name)+'</b><small>'+esc(r.id)+' · '+esc(r.park)+'</small></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">'+badge(r.state,r.state==="Atenção"?"warn":"ok")+'<button class="btn sm" type="button" data-rec="'+records.indexOf(r)+'">'+ic("eye")+'Ver status</button></div></div>').join("");
+    $$("[data-rec]",host).forEach(b=>b.addEventListener("click",()=>openRecord(records[+b.dataset.rec])));}
+  $("#qr-park").addEventListener("change",draw);$("#qr-kind").addEventListener("change",draw);draw();
+  $("#qr-print-all").addEventListener("click",()=>toast("Etiquetas QR preparadas para impressão (demonstração)."));
+};
+
+/* ---------- Atividades e checklists ---------- */
+const AI_STEPS=[["01","Planejar a inspeção","Humano + IA","Gem / Gemini","Apoio à preparação e organização da atividade."],["02","Conferir requisitos, documentos e checklists","Humano + IA","NotebookLM","Consulta e organização de procedimentos, requisitos e documentos."],["03","Verificar condições do local e equipamentos","Apenas humano","—","Execução e julgamento técnico em campo."],["04","Realizar testes e inspeções críticas","Apenas humano","—","Execução técnica e decisão durante a inspeção."],["05","Registrar desvios e evidências","Humano + IA","Gemini","Apoio à organização e estruturação dos registros."],["06","Analisar desvios e definir ações","Humano + IA","Gem + NotebookLM","Apoio à análise das informações e consulta à base documental."],["07","Validar correções e liberar a atividade","Apenas humano","—","Decisão e responsabilidade técnica."]];
+VIEWS.atividades=function(host){
+  host.innerHTML=pageHead("Atividades e checklists","Cadastre atividades, riscos, controles e itens de verificação que serão sincronizados com o app Android. Atividade = sequência de tarefas.",'<button class="btn" type="button" id="toggle-ai">'+ic("sparkles")+'Onde a IA entra</button><button class="btn primary" type="button" id="activity-new">'+ic("plus")+'Nova atividade</button>')+
+  '<section class="card" id="ai-flow" hidden style="margin-bottom:16px"><div class="card-head"><h2>Onde a IA entra na inspeção de segurança</h2><span class="muted">A classificação define onde a IA entra — e onde não entra</span></div><div class="flow">'+AI_STEPS.map(s=>'<div class="flow-step"><div class="n">'+s[0]+'</div><b>'+s[1]+'</b><span class="tag '+(s[2]==="Apenas humano"?"h":"hia")+'">'+s[2]+'</span><small>'+(s[3]!=="—"?s[3]+" · ":"")+s[4]+'</small></div>').join("")+'</div><p class="footnote">'+ic("info")+'Ferramentas indicadas para o caso de uso atual; aplicação deve ser validada durante o piloto. Execução, julgamento e validação técnica permanecem humanas.</p></section>'+
+  '<div class="callout">'+ic("phone")+'<div>Configure aqui o roteiro de cada atividade. No aplicativo, a equipe verá os riscos, medidas de controle e itens de checklist definidos para a atividade.</div></div>'+
+  '<div class="split"><div class="act-list" id="act-list"></div><section class="card"><div class="form-grid">'+
+  '<div class="field"><label for="activity-select">Atividade cadastrada</label><select id="activity-select"></select></div><div class="field"><label for="activity-park">Parque</label>'+selectHtml("activity-park",["Ambos os parques","Maral","Terra Santa"])+'</div>'+
+  '<div class="field"><label for="activity-name">Nome da atividade</label><input id="activity-name" type="text"></div><div class="field"><label for="activity-risks">Riscos envolvidos</label><input id="activity-risks" type="text"><button class="btn sm ai" type="button" id="activity-suggest" style="margin-top:8px">'+ic("sparkles")+'Sugerir controles da biblioteca</button></div>'+
+  '<div class="field full"><label for="activity-controls">Medidas de controle</label><textarea id="activity-controls" rows="2"></textarea></div></div>'+
+  '<div class="card-head" style="margin-top:18px"><h2>Checklist da atividade</h2><button class="btn sm" type="button" id="activity-add-check">'+ic("plus")+'Adicionar item</button></div>'+
+  '<div class="table-card check-tbl"><table class="tbl" style="min-width:520px"><thead><tr><th>Item de verificação</th><th style="width:150px">Comprovação por foto</th><th style="width:90px"></th></tr></thead><tbody id="activity-checks"></tbody></table></div>'+
+  '<div class="actions-row"><button class="btn primary" type="button" id="activity-save">Salvar configuração</button><button class="btn" type="button" id="activity-publish">'+ic("send")+'Enviar ao gestor para aprovação</button><button class="btn" type="button" id="activity-approve">'+ic("check")+'Aprovar e publicar (gestor)</button></div>'+
+  '<p id="activity-message" class="msg" role="status" aria-live="polite"></p><p class="footnote">'+ic("info")+'Demonstração local: salvar e publicar afetam apenas esta prévia. A versão publicada continua ativa no app até a aprovação do gestor.</p></section></div>';
+  const select=$("#activity-select");let cur=0;
+  function list(){$("#act-list").innerHTML=activityItems.map((a,i)=>'<button type="button" class="act-item'+(i===cur?" active":"")+'" data-a="'+i+'"><b>'+esc(a.name)+'</b><small>'+esc(a.park)+' · '+a.checks.length+' itens de checklist</small>'+badge(a.status)+'</button>').join("");
+    $$("[data-a]",host).forEach(b=>b.addEventListener("click",()=>{save();load(+b.dataset.a);}));}
+  function load(index){cur=index;select.innerHTML=activityItems.map((a,i)=>'<option value="'+i+'">'+esc(a.name)+'</option>').join("");select.value=String(index);const a=activityItems[index];
+    $("#activity-name").value=a.name;$("#activity-park").value=a.park;$("#activity-risks").value=a.risks;$("#activity-controls").value=a.controls;
+    $("#activity-checks").innerHTML=a.checks.map((c,i)=>'<tr><td><input type="text" value="'+esc(c.text)+'" aria-label="Item de verificação"></td><td><label class="check" style="margin:0"><input type="checkbox"'+(c.photo?" checked":"")+' aria-label="Exigir foto como comprovação">'+ic("camera")+'</label></td><td><button class="btn sm ghost danger" type="button" data-rm="'+i+'">Remover</button></td></tr>').join("");
+    $$("[data-rm]",host).forEach(b=>b.addEventListener("click",()=>{save();activityItems[cur].checks.splice(+b.dataset.rm,1);load(cur);}));list();}
+  function save(){const a=activityItems[cur];a.name=$("#activity-name").value.trim()||"Nova atividade";a.park=$("#activity-park").value;a.risks=$("#activity-risks").value.trim();a.controls=$("#activity-controls").value.trim();
+    a.checks=$$("#activity-checks tr").map(tr=>({text:$("input[type=text]",tr).value.trim(),photo:$("input[type=checkbox]",tr).checked})).filter(x=>x.text);}
+  const msg=t=>$("#activity-message").textContent=t;
+  load(0);
+  select.addEventListener("change",()=>{save();load(+select.value);});
+  $("#activity-add-check").addEventListener("click",()=>{save();activityItems[cur].checks.push({text:"Novo item de verificação",photo:false});load(cur);});
+  $("#activity-save").addEventListener("click",()=>{save();if(!/Rascunho|Aguardando/.test(activityItems[cur].status))activityItems[cur].status="Rascunho · alterações não publicadas";list();msg("Configuração salva nesta demonstração.");});
+  $("#activity-publish").addEventListener("click",()=>{save();activityItems[cur].status="Aguardando aprovação do gestor";list();msg("Alterações enviadas ao gestor imediato. A versão publicada continua ativa até a aprovação.");});
+  $("#activity-approve").addEventListener("click",()=>{save();const m=String(activityItems[cur].status).match(/v(\d+)/);const v=m?+m[1]+1:(activityItems[cur]._v=(activityItems[cur]._v||1)+1);activityItems[cur].status="Publicada · v"+v;list();msg("Checklist aprovado e publicado para o app nesta demonstração.");});
+  $("#activity-suggest").addEventListener("click",()=>{const risk=$("#activity-risks").value.toLowerCase();
+    const controls=risk.includes("altura")?"Análise de risco; sistema de ancoragem; cinturão e talabarte inspecionados; resgate disponível.":risk.includes("elétr")?"Desenergização; bloqueio e etiquetagem; teste de ausência de tensão; EPI adequado.":risk.includes("veículo")||risk.includes("colisão")?"Inspeção pré-uso; rota autorizada; velocidade segura; cinto de segurança.":"";
+    if(!controls){msg("Selecione um risco conhecido (altura, elétrico ou veículo) para sugerir controles da biblioteca.");return;}$("#activity-controls").value=controls;msg("Sugestão da biblioteca preenchida; revise antes de salvar.");});
+  $("#activity-new").addEventListener("click",()=>{save();activityItems.push({name:"Nova atividade",park:"Ambos os parques",status:"Rascunho",risks:"",controls:"",checks:[{text:"Novo item de verificação",photo:false}]});load(activityItems.length-1);$("#activity-name").select();});
+  $("#toggle-ai").addEventListener("click",()=>{$("#ai-flow").hidden=!$("#ai-flow").hidden;});
+};
+
+/* ---------- Liberações ---------- */
+function openPermit(p){
+  const a=activityItems.find(x=>x.name===p.activity)||{risks:"Queimaduras; incêndio",controls:"Permissão de trabalho a quente; extintor no local; vigia de fogo",checks:[{text:"Área livre de inflamáveis",photo:true},{text:"Extintor posicionado",photo:true}]};
+  const waiting=p.status==="Aguardando validação";
+  openDrawer(p.id+" · "+p.activity,ic("pin")+" "+esc(p.place)+" · Parque de "+esc(p.park),
+    '<div class="dr-sec"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+badge(p.status)+'<span class="muted" style="font-size:12.5px">Aberta por '+esc(p.by)+' em '+esc(p.date)+'</span></div></div>'+
+    '<div class="dr-sec"><h3>Etapas da liberação</h3><div class="timeline">'+PERMIT_STEPS.map((s,i)=>'<div style="opacity:'+(i<p.step||p.step===6?1:.45)+'"><b>'+s+'</b><small>'+(i<p.step?"Concluída no app":i===p.step&&!waiting?"Em andamento":waiting&&i===5?"Aguardando "+esc(p.supervisor):"Pendente")+'</small></div>').join("")+'</div></div>'+
+    '<div class="dr-sec"><h3>Avaliação de risco</h3><div class="kv"><div><small>Riscos</small><b>'+esc(a.risks)+'</b></div><div><small>Controles</small><b>'+esc(a.controls)+'</b></div></div></div>'+
+    '<div class="dr-sec"><h3>Equipe · '+esc(p.company)+'</h3>'+p.team.map(t=>'<div class="list-row"><div class="l"><span class="list-ic">'+ic("user")+'</span>'+esc(t)+'</div>'+badge("Documentação regular","ok")+'</div>').join("")+'</div>'+
+    '<div class="dr-sec"><h3>Checklist e evidências</h3>'+a.checks.map(c=>'<div class="list-row"><div class="l"><span class="list-ic" style="color:var(--primary)">'+ic("check")+'</span>'+esc(c.text)+'</div>'+(c.photo?'<span class="photo" style="width:54px;height:40px">'+ic("camera")+'</span>':'<span class="tag">Sem foto</span>')+'</div>').join("")+'</div>',
+    waiting?'<button class="btn" type="button" id="pm-adj">Solicitar ajuste</button><button class="btn primary" type="button" id="pm-ok">'+ic("check")+'Validar e liberar atividade</button>':'<button class="btn" type="button" id="pm-close">Fechar</button>',
+    d=>{const c=$("#pm-close",d);if(c)c.addEventListener("click",closeDrawer);
+      const ok=$("#pm-ok",d);if(ok)ok.addEventListener("click",()=>{p.status="Liberada";p.step=6;closeDrawer();go("liberacoes");toast(p.id+" validada. A equipe recebe a liberação no app.");});
+      const adj=$("#pm-adj",d);if(adj)adj.addEventListener("click",()=>{p.status="Ajuste solicitado";p.step=4;closeDrawer();go("liberacoes");toast("Ajuste solicitado ao técnico responsável.");});});
+}
+VIEWS.liberacoes=function(host){
+  host.innerHTML=pageHead("Liberação de atividade","A verificação é orientada pela atividade e pelos riscos associados. O técnico preenche no app; supervisor ou responsável realiza a validação definida.")+
+  '<div class="steps" style="grid-template-columns:repeat(6,minmax(0,1fr))">'+PERMIT_STEPS.map((s,i)=>'<div class="step"><div class="n">'+String(i+1).padStart(2,"0")+'</div><b>'+s+'</b></div>').join("")+'</div>'+
+  '<div class="kpis k3">'+kpi("Liberações hoje",permits.filter(p=>p.date.startsWith("01/11")).length,"Terra Santa e Maral","filecheck")+kpi("Aguardando validação",permits.filter(p=>p.status==="Aguardando validação").length,"Supervisor responsável","clock","warn")+kpi("Em preenchimento no app",permits.filter(p=>p.status==="Em preenchimento").length,"Técnicos em campo","phone","info")+'</div><div id="pm-table"></div>';
+  $("#pm-table").innerHTML=table([{label:"Liberação",render:p=>'<span class="cell-main">'+p.id+'</span><span class="cell-sub">'+esc(p.date)+'</span>'},{label:"Atividade",render:p=>esc(p.activity)+'<span class="cell-sub">'+esc(p.place)+'</span>'},{label:"Parque",key:"park"},{label:"Equipe",render:p=>esc(p.company)+'<span class="cell-sub">'+p.team.length+' pessoas</span>'},{label:"Etapas",render:p=>'<div class="steps-dots" title="'+p.step+' de 6">'+PERMIT_STEPS.map((s,i)=>'<i class="'+(i<p.step?"on":i===p.step?"cur":"")+'"></i>').join("")+'</div>'},{label:"Validador",key:"supervisor"},{label:"Status",render:p=>badge(p.status)}],permits,{click:true,min:860});
+  bindRows(host,permits,openPermit);
+};
+
+/* ---------- Inspeções ---------- */
+VIEWS.inspecoes=function(host,opts){
+  host.innerHTML=pageHead("Inspeções","Consulte inspeções por máquinas, equipamentos, veículos e acessórios de içamento. A inspeção pode ser direcionada ao tipo de atividade e ao contexto encontrado no campo.",'<button class="btn primary" type="button" data-go="programacoes">'+ic("calendar")+'Programar inspeção</button>')+
+  tabsHtml([["obj","Por objeto"],["done","Realizadas",inspections.filter(i=>i.status!=="Concluída").length],["geral","Inspeção geral"],["models","Modelos de checklist"]],"obj")+'<div id="ins-body"></div>';
+  function show(t){const b=$("#ins-body");
+    if(t==="obj"){b.innerHTML='<div class="callout">'+ic("info")+'<div>As inspeções podem ser organizadas pelo tipo de objeto. Os acessórios de içamento também entram no catálogo, com checklist próprio.</div></div><div class="toolbar"><div class="field"><label for="object-type-filter">Tipo de objeto</label>'+selectHtml("object-type-filter",[["Todos","Todos os objetos"],"Acessório de içamento","Máquina","Equipamento","Veículo leve","Veículo pesado"],"Todos")+'</div><span id="object-count" class="toolbar-note" aria-live="polite"></span></div><div id="obj-table"></div><p class="footnote">'+ic("link")+'Exemplos de acessórios de içamento: cintas, manilhas, catracas e itens definidos pela equipe de segurança.</p>';
+      const up=()=>{const type=$("#object-type-filter").value;const l=inspectionObjects.filter(o=>type==="Todos"||o.type===type);$("#obj-table").innerHTML=table([{label:"Objeto",render:o=>'<span class="cell-main">'+esc(o.object)+'</span>'},{label:"Tipo",key:"type"},{label:"Parque",key:"park"},{label:"Status da inspeção",render:o=>badge(o.status)}],l);$("#object-count").textContent=l.length+" objetos";};
+      $("#object-type-filter").addEventListener("change",up);up();}
+    if(t==="done"){b.innerHTML='<div id="done-table"></div>';const draw=()=>{$("#done-table").innerHTML=table([{label:"Inspeção",render:r=>'<span class="cell-main">'+r.id+'</span><span class="cell-sub">'+esc(r.date)+' · '+esc(r.by)+'</span>'},{label:"Parque",key:"park"},{label:"Tipo",key:"kind"},{label:"Objeto",key:"object"},{label:"Resultado",key:"result"},{label:"Status",render:r=>badge(r.status)},{label:"",render:(r,i)=>r.status==="Aguardando validação"?'<button class="btn sm primary" type="button" data-val="'+i+'">Validar</button>':""}],inspections,{min:860});
+      $$("[data-val]",b).forEach(x=>x.addEventListener("click",()=>{inspections[+x.dataset.val].status="Concluída";draw();toast("Inspeção validada pelo supervisor.");}));};draw();}
+    if(t==="geral"){b.innerHTML='<div class="grid-2">'+GENERAL.map(g=>'<section class="card"><div class="card-head"><h2 style="display:flex;gap:9px;align-items:center"><span class="kpi-ic" style="width:32px;height:32px">'+ic(g[1])+'</span>'+g[0]+'</h2><span class="muted">'+g[2].length+' modelos</span></div>'+g[2].map(x=>'<div class="list-row"><div class="l">'+esc(x)+'</div><span class="tag">Publicado no app</span></div>').join("")+'</section>').join("")+'</div>';}
+    if(t==="models"){b.innerHTML='<div class="qr-grid">'+CHECK_MODELS.map(m=>'<div class="qr-card"><span class="kpi-ic">'+ic(m[3])+'</span><div><b>'+m[0]+'</b><small>'+m[1]+'</small></div><div style="display:flex;justify-content:space-between;align-items:center"><span class="tag">'+m[2]+' itens</span><button class="btn sm" type="button" data-go="atividades">Editar</button></div></div>').join("")+'</div>';bindGo(b);}}
+  bindTabs(host,show);show("obj");
+};
+
+/* ---------- Treinamentos ---------- */
+VIEWS.treinamentos=function(host){
+  host.innerHTML=pageHead("Treinamentos","Registro, participantes e histórico. Treinamentos vencidos impactam o status do trabalhador na leitura do QR.",'<button class="btn primary" type="button" id="tr-new">'+ic("plus")+'Registrar treinamento</button>')+
+  '<div class="kpis k3">'+kpi("Realizados no mês","2","21 participantes","grad")+kpi("Programados","2","Próximo em 06/11","calendar","info")+kpi("Capacitações a vencer","3","Nos próximos 60 dias","alert","warn")+'</div>'+
+  '<div class="grid-2" style="grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)"><section class="card"><div class="card-head"><h2>Treinamentos</h2></div><div id="tr-table"></div></section><section class="card"><div class="card-head"><h2>Capacitações a vencer</h2></div>'+
+  [["Lucas Ferreira Costa","NR-10 · vence 20/12/2026"],["José Rian Silva de Oliveira","NR-35 · vence 05/12/2026"],["Carlos Mendes","Integração · vence 14/11/2026"]].map(x=>'<div class="list-row"><div class="l"><span class="list-ic">'+ic("user")+'</span><span>'+x[0]+'<span class="cell-sub">'+x[1]+'</span></span></div><button class="btn sm" type="button">Convocar</button></div>').join("")+'</section></div>';
+  const draw=()=>$("#tr-table").innerHTML=table([{label:"Treinamento",render:r=>'<span class="cell-main">'+esc(r.title)+'</span><span class="cell-sub">'+r.id+' · '+esc(r.instr)+'</span>'},{label:"Parque",key:"park"},{label:"Data",key:"date",cls:"nowrap"},{label:"Carga",key:"hours"},{label:"Participantes",key:"people"},{label:"Status",render:r=>badge(r.status)}],trainings,{min:620});draw();
+  $$(".list-row .btn",host).forEach(b=>b.addEventListener("click",()=>{b.textContent="Convocado";b.disabled=true;toast("Convocação enviada ao trabalhador e ao gestor do contrato.");}));
+  $("#tr-new").addEventListener("click",()=>openDrawer("Registrar treinamento","Os participantes também podem ser registrados pelo app, com leitura do crachá.",
+    '<div class="form-grid"><div class="field full"><label for="tn-t">Tema</label><input id="tn-t" value="DDS · Prevenção de quedas"></div><div class="field"><label for="tn-p">Parque</label>'+selectHtml("tn-p",["Maral","Terra Santa"])+'</div><div class="field"><label for="tn-d">Data</label><input id="tn-d" type="date" value="2026-11-01"></div></div><div class="dr-sec" style="margin-top:16px"><h3>Participantes</h3>'+records.filter(r=>r.kind==="Trabalhador").concat([{name:"José Rian Silva de Oliveira"},{name:"Carlos Mendes"}]).map(r=>'<label class="check"><input type="checkbox" checked>'+esc(r.name)+'</label>').join("")+'</div>',
+    '<button class="btn primary" type="button" id="tn-s">Salvar treinamento</button>',d=>$("#tn-s",d).addEventListener("click",()=>{trainings.unshift({id:"TRE-0"+(35+trainings.length),title:$("#tn-t",d).value,park:$("#tn-p",d).value,date:$("#tn-d",d).value.split("-").reverse().join("/"),hours:"30 min",people:$$("input:checked",d).length,status:"Concluído",instr:"Tiago Santos"});closeDrawer();draw();toast("Treinamento registrado no histórico dos participantes.");})));
+};
+
+/* ---------- Incidentes e desvios ---------- */
+function openIncident(r){
+  const waiting=r.status==="Aguardando aprovação";
+  const ish={"Método":["Rota sem sinalização de velocidade"],"Mão de obra":["Motorista em primeira semana no parque"],"Máquina":["Retrovisor com regulagem incorreta"],"Material":["—"],"Meio ambiente":["Poeira reduzindo visibilidade"],"Medição":["Sem registro de velocidade na rota"]};
+  let sev=3,prob=3;
+  const matrix=()=>{let h='<div class="ax"></div>'+[1,2,3,4,5].map(s=>'<div class="ax">S'+s+'</div>').join("");for(let p=5;p>=1;p--){h+='<div class="ax">P'+p+'</div>';for(let s=1;s<=5;s++){const v=s*p,c=v>=15?"#f19a8a":v>=8?"#f6cf7a":"#9fdccf";h+='<button type="button" data-s="'+s+'" data-p="'+p+'" style="background:'+c+'" class="'+(s===sev&&p===prob?"sel":"")+'" aria-label="Severidade '+s+', probabilidade '+p+'">'+v+'</button>';}}return h;};
+  openDrawer(r.id+" · "+r.title,esc(r.type)+" · Parque de "+esc(r.park)+" · "+esc(r.date),
+    '<div class="dr-sec"><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">'+badge(r.status)+'<span class="muted" style="font-size:12.5px">Responsável atual: '+esc(r.owner)+'</span></div></div>'+
+    '<div class="dr-sec"><h3>Comunicação</h3><div class="kv"><div><small>Envolvidos</small><b>'+esc(r.person)+'</b></div><div><small>Origem</small><b>App Android · Tiago Santos</b></div></div><div class="photo-strip" style="margin-top:10px"><span class="photo">'+ic("camera")+'</span><span class="photo">'+ic("camera")+'</span></div></div>'+
+    '<div class="dr-sec"><h3>1 · Classificação</h3><div class="kv"><div><small>Tipo de ocorrência</small><b>'+esc(r.type)+'</b></div><div><small>Potencial</small><b id="risk-level">Moderado (9)</b></div></div></div>'+
+    '<div class="dr-sec"><h3>2 · Matriz de risco <span class="tag">Severidade × Probabilidade</span></h3><div class="risk-matrix" id="risk-matrix">'+matrix()+'</div></div>'+
+    '<div class="dr-sec"><h3>3 · Ishikawa <button class="btn sm ai" type="button" id="ia-causes" style="margin-left:auto">'+ic("sparkles")+'Sugerir causas · Gem + NotebookLM</button></h3><div class="ishikawa" id="ishikawa">'+Object.keys(ish).map(k=>'<div><b>'+k+'</b><ul>'+ish[k].map(x=>'<li>'+x+'</li>').join("")+'</ul></div>').join("")+'</div></div>'+
+    '<div class="dr-sec"><h3>4 · 5 Porquês</h3><div class="whys"><div>Houve quase colisão no acesso norte.</div><div>O veículo trafegava acima da velocidade segura.</div><div>Não há sinalização de velocidade no trecho.</div><div>A rota foi alterada após obra e não foi revisada.</div><div>Não existe gatilho de revisão de rotas após mudanças.</div></div></div>'+
+    '<div class="dr-sec"><h3>5 · Plano de ação 5W2H</h3>'+table([{label:"O quê",key:"w"},{label:"Quem",key:"q"},{label:"Quando",key:"d",cls:"nowrap"},{label:"Como",key:"h"}],[{w:"Sinalizar velocidade máxima",q:"Supervisor da área",d:"08/11/2026",h:"Placas 20 km/h"},{w:"Incluir revisão de rotas no MOC",q:"Segurança do trabalho",d:"20/11/2026",h:"Procedimento"}],{min:420})+'</div>',
+    (waiting?'<button class="btn primary" type="button" id="inc-approve">'+ic("check")+'Aprovar comunicação (gestor)</button>':'<button class="btn" type="button" id="inc-close">Fechar</button><button class="btn primary" type="button" id="inc-save">Salvar investigação</button>'),
+    d=>{const bindM=()=>$$("#risk-matrix button",d).forEach(b=>b.addEventListener("click",()=>{sev=+b.dataset.s;prob=+b.dataset.p;$("#risk-matrix",d).innerHTML=matrix();bindM();const v=sev*prob;$("#risk-level",d).textContent=(v>=15?"Alto":v>=8?"Moderado":"Baixo")+" ("+v+")";}));bindM();
+      $("#ia-causes",d).addEventListener("click",e=>{e.currentTarget.disabled=true;e.currentTarget.innerHTML=ic("sparkles")+"Sugestões adicionadas — revisar";[["Método","Procedimento de rotas sem gatilho de revisão (sugestão IA)"],["Mão de obra","Integração não aborda rotas internas (sugestão IA)"]].forEach(s=>{const box=$$("#ishikawa > div",d).find(x=>$("b",x).textContent===s[0]);$("ul",box).insertAdjacentHTML("beforeend",'<li class="ia">'+s[1]+'</li>');});});
+      const a=$("#inc-approve",d);if(a)a.addEventListener("click",()=>{r.status="Em investigação";r.owner="TST local";closeDrawer();go("incidentes");toast(r.id+" aprovado. Investigação iniciada pelo TST local.");});
+      const c=$("#inc-close",d);if(c)c.addEventListener("click",closeDrawer);const s=$("#inc-save",d);if(s)s.addEventListener("click",()=>{closeDrawer();toast("Investigação salva. Plano de ação vinculado ao incidente.");});});
+}
+VIEWS.incidentes=function(host,opts){
+  const c=counts();
+  host.innerHTML=pageHead("Gestão de incidentes","Consulte comunicações, aprovações, investigações e ações corretivas por filtros. Do desvio à ação, com rastreabilidade completa.")+
+  tabsHtml([["com","Comunicações",incidentRecords.filter(r=>r.status==="Aguardando aprovação").length],["nc","Desvios e ações corretivas",deviations.filter(d=>d.status!=="Concluída").length]],opts&&opts.tab||"com")+'<div id="inc-body"></div>';
+  function showCom(){const b=$("#inc-body");
+    b.innerHTML='<div class="filters"><div class="field"><label for="incident-park">Parque</label>'+selectHtml("incident-park",parkOpts,"Todos")+'</div><div class="field"><label for="incident-status">Status</label>'+selectHtml("incident-status",[["Todos","Todos os status"],"Aguardando aprovação","Em investigação","Ação corretiva pendente","Concluído"],"Todos")+'</div><div class="field"><label for="incident-type">Tipo de ocorrência</label>'+selectHtml("incident-type",[["Todos","Todos os tipos"],"Acidente com lesão","Acidente veicular","Quase acidente","Condição insegura","Incidente ambiental"],"Todos")+'</div><button id="incident-search" class="btn primary" type="button" style="height:40px">'+ic("search")+'Consultar</button></div>'+
+    '<div id="incident-empty" class="empty" role="status"><div class="em-ic">'+ic("filter")+'</div><h3 id="incident-empty-t">Ajuste os filtros e clique em Consultar</h3><p>As ocorrências são exibidas após a consulta. Comunicações feitas no app chegam aqui na sincronização.</p></div>'+
+    '<div id="incident-results" hidden><div class="kpis k3">'+kpi("Ocorrências encontradas","0",null,"alert","","incident-total")+kpi("Em andamento","0",null,"clock","info","incident-open")+kpi("Aguardando gestor","0",null,"user","warn","incident-approval")+'</div><div id="incident-table"></div><p class="footnote">'+ic("info")+'Os registros são demonstrativos. O fluxo mantém a aprovação do gestor para acidentes e o acompanhamento de investigação e correções. Clique em uma ocorrência para abrir a investigação.</p></div>';
+    let submitted=!!(opts&&opts.submitted);
+    function update(){const park=$("#incident-park").value,status=$("#incident-status").value,type=$("#incident-type").value;
+      const rows=incidentRecords.filter(r=>(park==="Todos"||r.park===park)&&(status==="Todos"||r.status===status)&&(type==="Todos"||r.type===type));
+      $("#incident-empty").hidden=submitted;$("#incident-results").hidden=!submitted;if(!submitted)return;
+      $("#incident-table").innerHTML=table([{label:"Ocorrência",render:r=>'<span class="cell-main">'+r.id+'</span>'+(r.fresh?'<span class="cell-sub" style="color:var(--lime-ink)">Recebido do app</span>':"")},{label:"Data",key:"date",cls:"nowrap"},{label:"Parque",key:"park"},{label:"Tipo",key:"type"},{label:"Descrição breve",key:"title"},{label:"Status",render:r=>badge(r.status,r.status==="Concluído"?"ok":"warn")},{label:"Responsável atual",key:"owner"}],rows,{click:true,min:900});
+      bindRows($("#incident-table"),rows,openIncident);$$("#incident-table tr.click").forEach((tr,i)=>{if(rows[i].fresh)tr.classList.add("flash");});
+      $("#incident-total").textContent=rows.length;$("#incident-open").textContent=rows.filter(r=>r.status!=="Concluído").length;$("#incident-approval").textContent=rows.filter(r=>r.status==="Aguardando aprovação").length;
+      if(!rows.length){$("#incident-empty-t").textContent="Nenhuma ocorrência encontrada com esses filtros.";$("#incident-empty").hidden=false;$("#incident-results").hidden=true;}}
+    $("#incident-search").addEventListener("click",()=>{submitted=true;update();});
+    ["#incident-park","#incident-status","#incident-type"].forEach(id=>$(id).addEventListener("change",()=>{submitted=false;$("#incident-empty-t").textContent="Filtros alterados. Clique em Consultar para atualizar as ocorrências.";update();}));update();}
+  function showNc(){const b=$("#inc-body");
+    b.innerHTML='<div class="steps" style="grid-template-columns:repeat(7,minmax(0,1fr))">'+NC_STEPS.map((s,i)=>'<div class="step"><div class="n">'+String(i+1).padStart(2,"0")+'</div><b>'+s+'</b></div>').join("")+'</div><div class="callout">'+ic("link")+'<div>O objetivo é manter o vínculo entre o que foi identificado, o que já se tem em histórico, o que foi feito e o resultado obtido.</div></div><div id="nc-table"></div>';
+    const draw=()=>{$("#nc-table").innerHTML=table([{label:"Desvio",render:d=>'<span class="cell-main">'+d.id+'</span><span class="cell-sub">'+esc(d.title)+'</span>'},{label:"Origem",key:"origin"},{label:"Parque",key:"park"},{label:"Ação corretiva",key:"action"},{label:"Responsável",key:"resp"},{label:"Prazo",render:d=>d.status==="Fora do prazo"?'<span style="color:var(--red);font-weight:600">'+d.due+'</span>':d.due,cls:"nowrap"},{label:"Etapa",render:d=>'<div class="steps-dots" title="'+NC_STEPS[d.step-1]+'">'+NC_STEPS.map((s,i)=>'<i class="'+(i<d.step?"on":"")+'"></i>').join("")+'</div>'},{label:"Status",render:d=>badge(d.status)},{label:"",render:(d,i)=>d.status==="Aguardando validação"?'<button class="btn sm primary" type="button" data-ncv="'+i+'">Validar</button>':d.status==="Fora do prazo"?'<button class="btn sm" type="button" data-ncc="'+i+'">Cobrar</button>':""}],deviations,{min:1080});
+      $$("[data-ncv]",b).forEach(x=>x.addEventListener("click",()=>{const d=deviations[+x.dataset.ncv];d.status="Concluída";d.step=7;draw();renderNav();toast(d.id+" validada e registrada no histórico.");}));
+      $$("[data-ncc]",b).forEach(x=>x.addEventListener("click",()=>{x.textContent="Cobrado";x.disabled=true;toast("Notificação enviada ao responsável e ao gestor imediato.");}));};draw();}
+  bindTabs(host,t=>t==="com"?showCom():showNc());(opts&&opts.tab==="nc")?showNc():showCom();
+};
+
+/* ---------- EPIs ---------- */
+VIEWS.epis=function(host){
+  host.innerHTML=pageHead("Gestão de EPIs","Controle estoque, entregas, reposições e histórico por trabalhador e parque. Consulte estoque, entregas, CA e registros.")+
+  '<div class="kpis k3">'+kpi("Entregas neste mês",epiDeliveries.length,"Web e app","hardhat","","epi-month-count")+kpi("EPIs próximos da reposição","5","Próximos 30 dias","history","info")+kpi("Itens abaixo do estoque mínimo","1","Cinturão paraquedista","alert","danger")+'</div>'+
+  tabsHtml([["stock","Estoque"],["delivery","Registrar entrega"],["history","Histórico de entregas"]],"stock")+
+  '<section id="epi-stock-view" role="tabpanel"><div class="toolbar"><div class="field"><label for="epi-park">Parque / almoxarifado</label>'+selectHtml("epi-park",[["Todos","Todos os parques"],"Maral","Terra Santa"],"Todos")+'</div><button id="epi-go-delivery" class="btn primary" type="button" style="margin-left:auto">'+ic("plus")+'Registrar entrega</button></div><div id="epi-stock-table"></div><p class="footnote">'+ic("info")+'O catálogo guarda o CA, lote, validade informada pelo fabricante, saldo e período de reposição.</p></section>'+
+  '<section id="epi-delivery-view" role="tabpanel" hidden><div class="card" style="max-width:760px"><h2>Registrar entrega de EPI</h2><p class="muted" style="margin:-6px 0 16px">Selecione a pessoa e o item; a entrega entra no histórico individual e atualiza o saldo do almoxarifado.</p><div class="form-grid">'+
+  '<div class="field"><label for="epi-worker">Trabalhador</label>'+selectHtml("epi-worker",[["","Selecionar trabalhador"],"Lucas Ferreira Costa","Ana Paula Nascimento","José Rian Silva de Oliveira"],"")+'</div><div class="field"><label for="epi-delivery-park">Parque</label>'+selectHtml("epi-delivery-park",["Maral","Terra Santa"])+'</div>'+
+  '<div class="field"><label for="epi-item">EPI</label><select id="epi-item"></select></div><div class="field"><label for="epi-quantity">Quantidade</label><input id="epi-quantity" type="number" min="1" value="1"></div>'+
+  '<div class="field"><label for="epi-reason">Motivo</label>'+selectHtml("epi-reason",["Entrega inicial","Substituição por desgaste","Substituição por dano","Extravio"])+'</div><div class="field"><label for="epi-date">Data da entrega</label><input id="epi-date" type="date"></div></div>'+
+  '<label class="check"><input id="epi-receipt" type="checkbox"><span>Confirmo que a entrega foi realizada e que o trabalhador recebeu orientação de uso.</span></label><button id="epi-save-delivery" class="btn primary" type="button">'+ic("check")+'Salvar entrega e gerar recibo</button><div id="epi-message" class="msg" role="status" aria-live="polite"></div><p class="footnote">'+ic("info")+'Nesta fase, o aceite é um registro demonstrativo. No app, o trabalhador assina na tela do celular; operação offline mantém o registro até a sincronização.</p></div></section>'+
+  '<section id="epi-history-view" role="tabpanel" hidden><div id="epi-history-table"></div></section>';
+  function showEpiTab(t){$$("[data-tab]",host).forEach(b=>{const a=b.dataset.tab===t;b.classList.toggle("active",a);b.setAttribute("aria-selected",String(a));});["stock","delivery","history"].forEach(n=>$("#epi-"+n+"-view").hidden=n!==t);if(t==="history")renderHistory();}
+  function renderStock(){const park=$("#epi-park").value;$("#epi-stock-table").innerHTML=table([{label:"EPI",render:i=>'<span class="cell-main">'+esc(i.name)+'</span>'},{label:"CA",key:"ca"},{label:"Validade do lote",key:"lot"},{label:"Estoque",render:i=>i.stock<i.min?'<span style="color:var(--red);font-weight:600">'+i.stock+'</span>':i.stock},{label:"Mínimo",key:"min"},{label:"Reposição prevista",key:"replace"},{label:"Local",key:"park"},{label:"Situação",render:i=>i.stock<i.min?badge("Abaixo do mínimo"):badge("Em dia")}],epiStock.filter(i=>park==="Todos"||i.park===park),{min:820});}
+  function renderHistory(){$("#epi-history-table").innerHTML=table([{label:"Data",key:"date",cls:"nowrap"},{label:"Trabalhador",render:i=>'<span class="cell-main">'+esc(i.worker)+'</span>'+(i.app?'<span class="cell-sub">Registrado no app · assinatura digital</span>':"")},{label:"EPI",key:"epi"},{label:"Qtd.",key:"qty"},{label:"Motivo",key:"reason"},{label:"Parque",key:"park"}],epiDeliveries);}
+  function fillItems(){$("#epi-item").innerHTML=epiStock.map(i=>'<option value="'+i.id+'">'+esc(i.name)+' · '+i.ca+' · saldo '+i.stock+'</option>').join("");}
+  fillItems();bindTabs(host,showEpiTab);
+  $("#epi-park").addEventListener("change",renderStock);$("#epi-go-delivery").addEventListener("click",()=>showEpiTab("delivery"));
+  $("#epi-save-delivery").addEventListener("click",()=>{const m=$("#epi-message");m.className="msg";
+    const worker=$("#epi-worker").value,quantity=Number($("#epi-quantity").value),item=epiStock.find(v=>v.id===$("#epi-item").value),accepted=$("#epi-receipt").checked;
+    if(!worker||!item||!Number.isInteger(quantity)||quantity<1){m.className="msg warn";m.textContent="Selecione o trabalhador, o EPI e uma quantidade válida.";return;}
+    if(!accepted){m.className="msg warn";m.textContent="Confirme o recebimento antes de salvar a entrega.";return;}
+    if(quantity>item.stock){m.className="msg warn";m.textContent="O saldo disponível é insuficiente para esta entrega.";return;}
+    const dv=$("#epi-date").value,date=dv?dv.split("-").reverse().join("/"):new Intl.DateTimeFormat("pt-BR").format(new Date());
+    item.stock-=quantity;epiDeliveries.unshift({date:date,worker:worker,epi:item.name,qty:quantity,reason:$("#epi-reason").value,park:$("#epi-delivery-park").value});
+    m.textContent="Entrega registrada no histórico de demonstração. Recibo pronto para conferência.";$("#epi-month-count").textContent=epiDeliveries.length;$("#epi-receipt").checked=false;$("#epi-quantity").value="1";fillItems();$("#epi-item").value=item.id;renderStock();});
+  renderStock();
+};
+
+/* ---------- Documentos e requisitos ---------- */
+VIEWS.docs=function(host){
+  const contr=state.role==="contratada";
+  host.innerHTML=pageHead(contr?"Área do fornecedor":"Documentos e requisitos",contr?"Envie e atualize os documentos dos requisitos e contratos liberados para a sua empresa.":"Documentação interna, envio de fornecedores e evidências para requisitos e auditorias.")+
+  '<div class="callout">'+ic("lock")+'<div>Organize documentos da empresa, recebimentos de fornecedores e evidências ligadas a requisitos legais e auditorias ISO. Cada público acessa apenas sua área.</div></div>'+
+  (contr?"":tabsHtml([["company","Minha empresa"],["supplier","Fornecedores",2],["iso","Requisitos e auditorias ISO"]],"company"))+
+  '<section id="docs-company-view" role="tabpanel"'+(contr?" hidden":"")+'><div class="card-head"><h2>Documentação da empresa</h2><span class="count">Acesso interno</span></div>'+table([{label:"Documento",render:r=>'<span class="cell-main">'+r[0]+'</span>'},{label:"Unidade",render:r=>r[1]},{label:"Responsável",render:r=>r[2]},{label:"Validade",render:r=>r[3]},{label:"Status",render:r=>badge(r[4])}],[["Programa de Gerenciamento de Riscos","Terra Santa","Segurança do trabalho","18/12/2026","Aprovado"],["Procedimento de trabalho em altura","Maral","Segurança do trabalho","10/11/2026","Revisar"],["Plano de atendimento a emergências","Terra Santa","Gestão da unidade","15/03/2027","Aprovado"]])+'<div class="actions-row"><button class="btn primary" type="button" data-doc-action="empresa">'+ic("upload")+'Adicionar documento</button></div></section>'+
+  '<section id="docs-supplier-view" role="tabpanel"'+(contr?"":" hidden")+'><div class="card-head"><h2>Documentos de fornecedores</h2><span class="count">Acesso compartilhado por empresa</span></div>'+table([{label:"Fornecedor",render:r=>'<span class="cell-main">'+r[0]+'</span>'},{label:"Requisito",render:r=>r[1]},{label:"Parque",render:r=>r[2]},{label:"Envio",render:r=>r[3]},{label:"Status da análise",render:r=>badge(r[4])}],(contr?[["Flexwind Serviços","Documentação de veículo","Terra Santa","26/10/2026","Ajuste solicitado"],["Flexwind Serviços","Lista de trabalhadores alocados","Terra Santa","24/10/2026","Aprovado"],["Flexwind Serviços","Laudo do guindaste 50 t","Terra Santa","—","Pendente de envio"]]:[["Ventos do Norte Ltda.","Comprovante de capacitação da equipe","Maral","27/10/2026","Em conferência"],["Flexwind Serviços","Documentação de veículo","Terra Santa","26/10/2026","Ajuste solicitado"],["Flexwind Serviços","Lista de trabalhadores alocados","Terra Santa","24/10/2026","Aprovado"]]))+
+  '<div class="actions-row">'+(contr?'<button class="btn primary" type="button" data-doc-action="enviar">'+ic("upload")+'Enviar documento</button>':'<button class="btn" type="button" data-doc-action="solicitar">'+ic("send")+'Solicitar documentação</button><button class="btn" type="button" data-doc-action="acesso">'+ic("eye")+'Ver como fornecedor</button>')+'</div><p class="footnote">'+ic("info")+'O fornecedor envia documentos apenas para os requisitos e contratos liberados para sua empresa. A equipe interna confere e registra aprovação ou pedido de ajuste.</p></section>'+
+  '<section id="docs-iso-view" role="tabpanel" hidden><div class="card-head"><h2>Requisitos e evidências de auditoria</h2><span class="count">Acesso interno</span></div>'+table([{label:"Norma / requisito",render:r=>'<span class="cell-main">'+r[0]+'</span>'},{label:"Unidade",render:r=>r[1]},{label:"Evidência associada",render:r=>r[2]},{label:"Responsável",render:r=>r[3]},{label:"Status",render:r=>badge(r[4])}],[["ISO 45001 · Competência","Maral","Registros de treinamento","Segurança do trabalho","Evidência anexada"],["ISO 45001 · Controle operacional","Terra Santa","Inspeções e liberações","Gestão da unidade","Evidência pendente"],["Requisito legal · Gestão de EPI","Ambos","Fichas de entrega e estoque","Almoxarifado","Em revisão"]])+'<div class="actions-row"><button class="btn primary" type="button" data-doc-action="evidencia">'+ic("link")+'Associar evidência</button></div><p class="footnote">'+ic("info")+'Os requisitos legais são consultados na fonte Greenlegis. O Safelist mantém apenas registros e evidências internos vinculados à auditoria.</p></section>'+
+  '<p id="docs-message" class="msg" role="status" aria-live="polite"></p>'+
+  (contr?"":'<section class="card" style="margin-top:12px"><div class="card-head"><h2>Consulta externa · somente leitura</h2>'+badge("Greenlegis","info")+'</div><p class="muted">Quando houver conexão autorizada, o Safelist poderá consultar os requisitos e documentos legais na fonte, mostrando situação, origem e data da última consulta. Os dados da fonte não serão alterados pelo Safelist.</p><div class="actions-row"><button class="btn" type="button" data-doc-action="consulta-api">'+ic("refresh")+'Consultar Greenlegis</button></div><p class="footnote">'+ic("info")+'Demonstração: a conexão real depende de acesso autorizado e de uma API que disponibilize esses dados. A página pública da Greenlegis menciona API para integração com BI, mas não confirma uma API específica para consulta de requisitos.</p></section>');
+  if(!contr)bindTabs(host,t=>["company","supplier","iso"].forEach(n=>$("#docs-"+n+"-view").hidden=n!==t));
+  $$("[data-doc-action]",host).forEach(b=>b.addEventListener("click",()=>{const a=b.dataset.docAction;
+    if(a==="acesso"){setRole("contratada");return;}
+    $("#docs-message").textContent=a==="solicitar"?"Solicitação preparada na demonstração; envio real depende dos acessos do fornecedor.":a==="consulta-api"?"Consulta demonstrativa somente para leitura. A conexão real depende de acesso autorizado.":a==="enviar"?"Documento enviado para conferência da equipe de segurança (demonstração).":"Ação disponível no fluxo demonstrativo de documentos.";}));
+};
+
+/* ---------- Usuários e acessos ---------- */
+VIEWS.acessos=function(host){
+  const profiles=[["Gerência","Indicadores, histórico e análise","grid"],["Supervisão","Validação e acompanhamento","check"],["Administração","Cadastros e configuração","lock"],["Técnico","Execução e registros","hardhat"],["Contratada / Subcontratada","Recursos compatíveis com a responsabilidade","building"]];
+  host.innerHTML=pageHead("Usuários e acessos","Login Google, perfis, hierarquia de gestores e permissões de consulta e aprovação. Mesma base, experiências diferentes conforme responsabilidade e acesso.",'<button class="btn primary" type="button" id="u-invite">'+ic("plus")+'Convidar usuário</button>')+
+  '<div class="grid-2" style="margin-bottom:16px">'+[["Conta corporativa Google","Identifica o usuário e mantém o acesso da própria conta","user"],["Gestores e hierarquia","Relação gestor-equipe pode vir do diretório corporativo quando disponível; caso contrário, é configurada pela administração","users"],["Equipe de segurança","Acesso conforme unidade e função; consulta a outras unidades depende de aprovação do superior","shield"],["Contratadas","Acesso à própria área para envio e atualização de documentos e registros","building"]].map(x=>'<div class="kpi"><div class="kpi-ic">'+ic(x[2])+'</div><div><b style="font-size:14px">'+x[0]+'</b><div class="kpi-note">'+x[1]+'</div></div></div>').join("")+'</div>'+
+  '<section class="card"><div class="card-head"><h2>Perfis de acesso</h2><span class="muted">Use “Visualizar como” no menu do perfil para simular</span></div><div class="flow" style="grid-template-columns:repeat(5,minmax(0,1fr))">'+profiles.map(p=>'<div class="flow-step"><span class="kpi-ic" style="width:30px;height:30px">'+ic(p[2])+'</span><b style="margin-top:8px">'+p[0]+'</b><small>'+p[1]+'</small></div>').join("")+'</div></section>'+
+  '<section class="card"><div class="card-head"><h2>Solicitações de acesso a outras unidades</h2></div><div id="acc-req"></div></section>'+
+  '<section class="card"><div class="card-head"><h2>Usuários</h2><span class="count">'+users.length+' usuários</span></div>'+table([{label:"Usuário",render:u=>'<div style="display:flex;gap:10px;align-items:center"><span class="avatar">'+u.name.split(" ").map(x=>x[0]).slice(0,2).join("")+'</span><span><span class="cell-main">'+esc(u.name)+'</span><span class="cell-sub">'+esc(u.email)+'</span></span></div>'},{label:"Perfil",render:u=>'<span class="tag">'+u.role+'</span>'},{label:"Unidade",key:"unit"},{label:"Gestor imediato",key:"manager"},{label:"Último acesso",key:"last"}],users,{min:760})+'</section>';
+  const drawReq=()=>{$("#acc-req").innerHTML=table([{label:"Solicitante",render:r=>'<span class="cell-main">'+esc(r.who)+'</span><span class="cell-sub">'+esc(r.date)+'</span>'},{label:"Unidade de origem",key:"from"},{label:"Unidade solicitada",key:"to"},{label:"Motivo",key:"reason"},{label:"Status",render:r=>badge(r.status)},{label:"",render:(r,i)=>r.status==="Aguardando aprovação"?'<div style="display:flex;gap:6px"><button class="btn sm primary" type="button" data-ok="'+i+'">Aprovar</button><button class="btn sm" type="button" data-no="'+i+'">Recusar</button></div>':""}],accessRequests,{min:760});
+    $$("[data-ok]",host).forEach(b=>b.addEventListener("click",()=>{accessRequests[+b.dataset.ok].status="Aprovado · registrado";drawReq();renderNav();toast("Acesso aprovado. A liberação fica registrada no histórico.");}));
+    $$("[data-no]",host).forEach(b=>b.addEventListener("click",()=>{accessRequests[+b.dataset.no].status="Recusado";drawReq();renderNav();}));};drawReq();
+  $("#u-invite").addEventListener("click",()=>toast("Convite enviado. O acesso usa a conta corporativa Google."));
+};
+
+/* ---------- App Android · sincronização ---------- */
+VIEWS.app=function(host){
+  host.innerHTML=pageHead("App Android","Prévia do acesso às inspeções de campo e da sincronização manual. No Android, a sincronização é iniciada pela pessoa quando desejar; os registros continuam salvos no aparelho até serem enviados.",'<a class="btn" href="safelist-app.html" target="_blank" rel="noopener">'+ic("phone")+'Abrir protótipo do app</a>')+
+  '<div class="grid-2" style="grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)"><section class="card"><div style="text-align:center;padding:4px 4px 14px"><span class="kpi-ic" style="margin:0 auto 10px;width:46px;height:46px">'+ic("phone")+'</span><h2 style="font-size:15px">Menu principal · App Android</h2><p class="muted" style="margin-top:4px">Acesso rápido às atividades e aos registros de campo.</p></div>'+
+  '<div class="list-row"><b>Inspeções e atividades</b><span class="muted">Disponível no aparelho</span></div><div class="list-row"><b>Comunicações de incidentes</b><span class="muted" id="sync-pending">'+syncInfo.pending+'</span></div><div class="list-row"><b>Última sincronização</b><span class="muted" id="sync-last">'+syncInfo.last+'</span></div>'+
+  '<div style="display:flex;justify-content:center;padding:16px 0 4px"><button id="sync-now" class="btn primary" type="button">'+ic("refresh")+'Sincronizar agora</button></div><div id="sync-message" class="msg" role="status" aria-live="polite" style="text-align:center"></div><p class="footnote" style="justify-content:center;text-align:center">Ao consultar um QR com internet, o app busca o status mais recente disponível. Sem conexão, mostra a data da última atualização guardada.</p></section>'+
+  '<section class="card"><div class="card-head"><h2>Aparelhos em campo</h2></div>'+table([{label:"Usuário",render:d=>'<span class="cell-main">'+esc(d.user)+'</span><span class="cell-sub">'+esc(d.device)+'</span>'},{label:"Parque",key:"park"},{label:"Última sincronização",key:"last"},{label:"Pendentes",render:d=>d.pending?badge(d.pending+" aguardando envio","warn"):badge("Sincronizado","ok")}],devices,{min:520})+
+  '<div class="card-head" style="margin-top:18px"><h2>Integrações · matriz unificada</h2></div>'+[["Greenlegis","Requisitos legais · somente leitura","Demonstração"],["Obrasoft","Fonte externa conectada à matriz","Planejada"],["AppSheet","Inspeções, REX e DDS existentes","Migração planejada"],["Google Workspace","Login corporativo e diretório","Ativo"]].map(x=>'<div class="list-row"><div class="l"><span class="list-ic">'+ic("link")+'</span><span><b>'+x[0]+'</b><span class="cell-sub">'+x[1]+'</span></span></div>'+badge(x[2],x[2]==="Ativo"?"ok":"info")+'</div>').join("")+'</section></div>';
+  $("#sync-now").addEventListener("click",()=>{const now=nowStamp();syncInfo.last=now;syncInfo.pending="Nenhum registro aguardando envio";$("#sync-last").textContent=now;$("#sync-pending").textContent=syncInfo.pending;$("#sync-message").textContent="Sincronização concluída nesta demonstração.";});
+};
+
+function bindGo(el){$$("[data-go]",el).forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));}
+const _go=go;go=function(v,o){_go(v,o);bindGo($("#view"));};
+
+/* =========================================================
+   Topbar: tema, notificações, perfil, busca
+   ========================================================= */
+function setTheme(t){state.theme=t;document.documentElement.dataset.theme=t;const dark=t==="dark";$("#theme-toggle").innerHTML=ic(dark?"sun":"moon");$("#theme-toggle").setAttribute("aria-label",dark?"Alternar para tema claro":"Alternar para tema escuro");}
+function setRole(r){state.role=r;$("#role-label").textContent=ROLES[r].label;const b=$("#role-banner");
+  if(r==="admin"){b.hidden=true;}else{b.hidden=false;b.innerHTML=ic("eye")+'<span>Visualizando como <b>'+ROLES[r].label+'</b> · '+ROLES[r].desc+'. O menu mostra apenas os recursos deste perfil.</span><button class="btn sm" type="button" id="role-reset">Voltar para Administração</button>';$("#role-reset").addEventListener("click",()=>setRole("admin"));}
+  $("#profile-pop").hidden=true;go(allowed(state.view)?state.view:"__");}
+function renderNotif(){$("#notif-pop").innerHTML='<div class="pop-title">Notificações</div>'+notifications.map((n,i)=>'<button class="pop-item" type="button" data-n="'+i+'">'+ic(n.icon)+'<span><b style="font-weight:600">'+esc(n.title)+'</b><small>'+esc(n.sub)+'</small></span></button>').join("");
+  $$("[data-n]",$("#notif-pop")).forEach(b=>b.addEventListener("click",()=>{const n=notifications[+b.dataset.n];$("#notif-pop").hidden=true;go(n.view,n.opts);}));}
+function renderProfile(){$("#profile-pop").innerHTML='<div style="display:flex;gap:10px;align-items:center;padding:8px 10px 10px"><span class="avatar">TS</span><span><b>Tiago Santos</b><small class="muted" style="display:block;font-size:12px">tiago.santos@empresa.com.br · Conta Google</small></span></div><div class="pop-title">Visualizar como</div>'+
+  Object.keys(ROLES).map(k=>'<button class="pop-item'+(k===state.role?" sel":"")+'" type="button" data-role="'+k+'">'+ic(k===state.role?"check":"user")+'<span><b style="font-weight:600">'+ROLES[k].label+'</b><small>'+ROLES[k].desc+'</small></span></button>').join("");
+  $$("[data-role]",$("#profile-pop")).forEach(b=>b.addEventListener("click",()=>setRole(b.dataset.role)));}
+function toggle(id){const el=$(id),open=el.hidden;$$(".popover").forEach(p=>p.hidden=true);el.hidden=!open;}
+$("#bell-btn").addEventListener("click",e=>{e.stopPropagation();renderNotif();toggle("#notif-pop");$("#bell-dot").hidden=true;});
+$("#profile-btn").addEventListener("click",e=>{e.stopPropagation();renderProfile();toggle("#profile-pop");});
+document.addEventListener("click",e=>{if(!e.target.closest(".popover"))$$(".popover").forEach(p=>p.hidden=true);if(!e.target.closest("#search-box"))$("#search-results").hidden=true;});
+$("#theme-toggle").addEventListener("click",()=>setTheme(state.theme==="light"?"dark":"light"));
+$("#menu-btn").addEventListener("click",()=>{$("#sidebar").classList.add("open");$("#scrim").classList.add("on");});
+$("#scrim").addEventListener("click",()=>{$("#sidebar").classList.remove("open");closeDrawer();$("#scrim").classList.remove("on");});
+$("#dr-close").addEventListener("click",closeDrawer);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawer();$$(".popover").forEach(p=>p.hidden=true);$("#search-results").hidden=true;}
+  if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();$("#global-search").focus();}});
+const search=$("#global-search");
+search.addEventListener("input",()=>{const q=search.value.trim().toLowerCase(),box=$("#search-results");if(q.length<2){box.hidden=true;return;}
+  const hits=records.filter(r=>(r.name+" "+r.id+" "+r.owner).toLowerCase().includes(q)).map(r=>({i:kindIcon(r.kind),t:r.name,s:r.kind+" · "+r.id+" · "+r.park,f:()=>openRecord(r)}))
+    .concat(incidentRecords.filter(r=>(r.id+" "+r.title+" "+r.type).toLowerCase().includes(q)).map(r=>({i:"alert",t:r.id+" · "+r.title,s:r.type+" · "+r.park,f:()=>openIncident(r)})))
+    .concat(permits.filter(p=>(p.id+" "+p.activity+" "+p.place).toLowerCase().includes(q)).map(p=>({i:"filecheck",t:p.id+" · "+p.activity,s:p.place,f:()=>openPermit(p)})));
+  box.innerHTML=hits.length?hits.slice(0,8).map((h,i)=>'<button type="button" data-h="'+i+'"><span class="list-ic">'+ic(h.i)+'</span><span><b style="font-weight:600">'+esc(h.t)+'</b><small>'+esc(h.s)+'</small></span></button>').join(""):'<p class="muted" style="padding:10px;font-size:13px">Nenhum resultado para “'+esc(search.value)+'”.</p>';
+  box.hidden=false;$$("[data-h]",box).forEach(b=>b.addEventListener("click",()=>{hits[+b.dataset.h].f();box.hidden=true;search.value="";}));});
+
+/* =========================================================
+   Integração com o protótipo do app (página lado a lado)
+   ========================================================= */
+window.addEventListener("message",e=>{const d=e.data||{};
+  if(d.type==="safelist-theme")setTheme(d.theme);
+  if(d.type==="safelist-navigate")go(d.view,d.opts);
+  if(d.type==="safelist-sync"){const p=d.payload||{};let n=0;
+    (p.incidents||[]).forEach(r=>{incidentRecords.unshift(Object.assign({fresh:true},r));n++;});
+    (p.deliveries||[]).forEach(r=>{epiDeliveries.unshift(Object.assign({app:true},r));const s=epiStock.find(x=>x.name===r.epi);if(s)s.stock=Math.max(0,s.stock-r.qty);n++;});
+    (p.permits||[]).forEach(r=>{permits.unshift(r);n++;});
+    (p.deviations||[]).forEach(r=>{deviations.unshift(r);n++;});
+    (p.inspections||[]).forEach(r=>{inspections.unshift(r);n++;});
+    (p.trainings||[]).forEach(r=>{trainings.unshift(r);n++;});
+    syncInfo.last=p.time||nowStamp();syncInfo.pending="Nenhum registro aguardando envio";devices[0].last=syncInfo.last;devices[0].pending=0;
+    const target=(p.incidents||[]).length?["incidentes",{submitted:true}]:(p.permits||[]).length?["liberacoes"]:(p.deviations||[]).length?["incidentes",{tab:"nc"}]:(p.deliveries||[]).length?["epis"]:(p.inspections||[]).length?["inspecoes"]:["app"];
+    notifications.unshift({icon:"phone",title:n+" registro"+(n===1?"":"s")+" recebido"+(n===1?"":"s")+" do app",sub:"Tiago Santos · Samsung Galaxy A54 · "+syncInfo.last,view:target[0],opts:target[1]});$("#bell-dot").hidden=false;
+    renderNav();if(["app","overview"].includes(state.view))go(state.view);
+    toast((n?n+" registro"+(n===1?"":"s")+" sincronizado"+(n===1?"":"s"):"Sincronização recebida")+" do app de campo (Tiago Santos).",n?"Ver registros":null,()=>go(target[0],target[1]));}
+});
+
+/* ---------- init ---------- */
+$("#logo").innerHTML=ic("shield");$("#menu-btn").innerHTML=ic("menu");$("#crumb-sep").innerHTML=ic("chev");$("#search-ic").outerHTML=ic("search");$("#bell-ic").outerHTML=ic("bell");$("#dr-close").innerHTML=ic("x");
+$("#ai-card").innerHTML='<b>'+ic("sparkles")+'IA no ponto certo</b><p>Gem, Gemini e NotebookLM apoiam preparação, consulta e análise. Execução, julgamento e validação permanecem humanas.</p>';
+const params=new URLSearchParams(location.search);
+setTheme(params.get("theme")==="dark"?"dark":"light");
+const start=(location.hash||"").slice(1);go(LABEL[start]?start:"overview");
+addEventListener("hashchange",()=>{const v=location.hash.slice(1);if(LABEL[v]&&v!==state.view)go(v);});
+})();
+</script>
+</body>
+</html>

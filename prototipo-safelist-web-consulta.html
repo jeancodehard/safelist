@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Safelist · Protótipo Web</title></head>
+<body style="margin:16px;background:#f3f6f4">
+<div id="safelist-web-sketch" aria-label="Rascunho geral da área web Safelist">
+<style>
+#safelist-web-sketch{color-scheme:light;--w-bg:light-dark(#f3f6f4,#171b19);--w-surface:light-dark(#fff,#232825);--w-ink:light-dark(#18211d,#e8eee9);--w-muted:light-dark(#64716b,#aab5ad);--w-line:light-dark(#dce3de,#3b4540);--w-green:light-dark(#176b50,#55c69a);--w-green-soft:light-dark(#e7f3ed,#20392f);--w-amber:light-dark(#94620c,#f0c76e);--w-amber-soft:light-dark(#fff3d9,#3b321f);font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:var(--w-ink);max-width:1100px;margin:0 auto}
+#safelist-web-sketch *{box-sizing:border-box}
+#safelist-web-sketch .shell{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:680px;background:var(--w-bg);border:1px solid var(--w-line);border-radius:18px;overflow:hidden}
+#safelist-web-sketch .sidebar{background:var(--w-surface);border-right:1px solid var(--w-line);padding:18px 12px}
+#safelist-web-sketch .brand{font-size:15px;font-weight:600;padding:3px 10px 20px}
+#safelist-web-sketch .workspace{font-size:11px;color:var(--w-muted);padding:0 10px 8px;text-transform:uppercase;letter-spacing:.06em}
+#safelist-web-sketch .nav{display:grid;gap:4px}
+#safelist-web-sketch .nav-item{width:100%;text-align:left;display:flex;align-items:center;gap:10px;padding:10px;border:0;background:transparent;font:inherit;border-radius:9px;color:var(--w-muted);font-size:13px;line-height:1.25;cursor:pointer}
+#safelist-web-sketch .nav-item.active{background:var(--w-green-soft);color:var(--w-green);font-weight:600}
+#safelist-web-sketch .nav-mark{width:7px;height:7px;border-radius:50%;background:currentColor;flex:0 0 7px}
+#safelist-web-sketch .main{min-width:0}
+#safelist-web-sketch .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 22px;background:var(--w-surface);border-bottom:1px solid var(--w-line)}
+#safelist-web-sketch .topbar strong{font-size:13px;font-weight:500}
+#safelist-web-sketch .top-tools{display:flex;align-items:center;gap:12px;color:var(--w-muted);font-size:12px}
+#safelist-web-sketch .avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--w-green-soft);color:var(--w-green);font-weight:600}
+#safelist-web-sketch .content{padding:23px}
+#safelist-web-sketch h1{margin:0 0 5px;font-size:22px;font-weight:600}
+#safelist-web-sketch h2{margin:0;font-size:14px;font-weight:600}
+#safelist-web-sketch p{margin:0;color:var(--w-muted);font-size:13px;line-height:1.45}
+#safelist-web-sketch .summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0 22px}
+#safelist-web-sketch .metric{background:var(--w-surface);border:1px solid var(--w-line);border-radius:12px;padding:13px}
+#safelist-web-sketch .metric-label{font-size:12px;color:var(--w-muted)}
+#safelist-web-sketch .metric-value{font-size:21px;font-weight:600;margin-top:5px}
+#safelist-web-sketch .filters{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:10px;align-items:end;margin:16px 0}
+#safelist-web-sketch label{display:block;color:var(--w-muted);font-size:11px;margin-bottom:5px}
+#safelist-web-sketch select{width:100%;min-height:40px;border:1px solid var(--w-line);border-radius:9px;padding:8px 10px;background:var(--w-surface);color:var(--w-ink);font:inherit;font-size:13px}
+#safelist-web-sketch button{font:inherit;font-size:12px;min-height:40px;padding:0 13px;border:1px solid var(--w-line);border-radius:9px;background:var(--w-surface);color:var(--w-ink);cursor:pointer}
+#safelist-web-sketch button.primary{background:var(--w-green);border-color:var(--w-green);color:#fff;font-weight:600}
+#safelist-web-sketch .results-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:18px 0 8px}
+#safelist-web-sketch .results-count{font-size:12px;color:var(--w-muted)}
+#safelist-web-sketch .table-wrap{overflow-x:auto;background:var(--w-surface);border:1px solid var(--w-line);border-radius:12px}
+#safelist-web-sketch table{width:100%;border-collapse:collapse;min-width:680px;font-size:12px}
+#safelist-web-sketch th,#safelist-web-sketch td{text-align:left;padding:12px 13px;border-bottom:1px solid var(--w-line);white-space:nowrap}
+#safelist-web-sketch th{font-size:10px;color:var(--w-muted);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+#safelist-web-sketch tbody tr:last-child td{border-bottom:0}
+#safelist-web-sketch .record-name{font-weight:600}#safelist-web-sketch .sub{display:block;color:var(--w-muted);font-size:11px;margin-top:3px}#safelist-web-sketch .module-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 2px;border-bottom:1px solid var(--w-line);font-size:13px}#safelist-web-sketch .module-row strong{font-weight:600}#safelist-web-sketch .module-row span{color:var(--w-muted)}
+#safelist-web-sketch .state{display:inline-flex;align-items:center;gap:6px;font-weight:500}
+#safelist-web-sketch .state:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--w-green)}
+#safelist-web-sketch .state.pending{color:var(--w-amber)}#safelist-web-sketch .state.pending:before{background:var(--w-amber)}
+#safelist-web-sketch .footnote{font-size:11px;color:var(--w-muted);margin-top:13px}
+#safelist-web-sketch .dash-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin:16px 0}
+#safelist-web-sketch .dash-controls>div{min-width:190px}
+#safelist-web-sketch .dash-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+#safelist-web-sketch .dash-panel{background:var(--w-surface);border:1px solid var(--w-line);border-radius:12px;padding:15px;margin:13px 0}
+#safelist-web-sketch .dash-panel h2{margin:0 0 12px}
+#safelist-web-sketch .dash-split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#safelist-web-sketch .dash-bar-row{display:grid;grid-template-columns:minmax(110px,1fr) minmax(80px,2fr) auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--w-line);font-size:12px}
+#safelist-web-sketch .dash-track{height:8px;border-radius:99px;background:var(--w-bg);overflow:hidden}
+#safelist-web-sketch .dash-fill{height:100%;border-radius:99px;background:var(--w-green)}
+#safelist-web-sketch .dash-attention{color:var(--w-amber)}
+#safelist-web-sketch .dash-small{font-size:11px;color:var(--w-muted)}
+@media(max-width:820px){#safelist-web-sketch .dash-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#safelist-web-sketch .dash-split{grid-template-columns:1fr}}
+@media(max-width:480px){#safelist-web-sketch .dash-grid{grid-template-columns:1fr}#safelist-web-sketch .dash-bar-row{grid-template-columns:minmax(90px,1fr) minmax(55px,1fr) auto;gap:6px}}
+#safelist-web-sketch .docs-tabs{display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid var(--w-line);margin:17px 0 12px}
+#safelist-web-sketch .docs-tabs button{border:0;border-radius:8px 8px 0 0;background:transparent;color:var(--w-muted);padding:10px 12px}
+#safelist-web-sketch .docs-tabs button.active{color:var(--w-green);background:var(--w-green-soft);font-weight:600}
+#safelist-web-sketch .docs-info{background:var(--w-green-soft);padding:12px 14px;border-radius:10px;margin:12px 0;font-size:12px;line-height:1.45}
+#safelist-web-sketch .docs-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+#safelist-web-sketch .docs-note{font-size:11px;color:var(--w-muted);margin-top:12px}
+#safelist-web-sketch .epi-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0}
+#safelist-web-sketch .epi-tabs{display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid var(--w-line);margin:17px 0 12px}
+#safelist-web-sketch .epi-tabs button{border:0;border-radius:8px 8px 0 0;background:transparent;color:var(--w-muted);padding:10px 12px}
+#safelist-web-sketch .epi-tabs button.active{color:var(--w-green);background:var(--w-green-soft);font-weight:600}
+#safelist-web-sketch .epi-table{background:var(--w-surface);border:1px solid var(--w-line);border-radius:12px;overflow:auto}
+#safelist-web-sketch .epi-table table{min-width:620px}
+#safelist-web-sketch .epi-form{max-width:720px;background:var(--w-surface);border:1px solid var(--w-line);border-radius:12px;padding:15px;margin-top:13px}
+#safelist-web-sketch .epi-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#safelist-web-sketch .epi-form input,#safelist-web-sketch .epi-form select{width:100%;min-height:40px;border:1px solid var(--w-line);border-radius:9px;padding:8px 10px;background:var(--w-bg);color:var(--w-ink);font:inherit;font-size:13px}
+#safelist-web-sketch .epi-check{display:flex;gap:8px;align-items:flex-start;margin:12px 0;color:var(--w-muted);font-size:12px}
+#safelist-web-sketch .epi-check input{margin-top:2px;accent-color:var(--w-green)}
+#safelist-web-sketch .epi-note{font-size:11px;color:var(--w-muted);margin-top:10px}
+#safelist-web-sketch .epi-message{font-size:12px;color:var(--w-green);margin-top:10px;min-height:18px}
+@media(max-width:820px){#safelist-web-sketch .shell{grid-template-columns:1fr}#safelist-web-sketch .sidebar{border-right:0!important;border-bottom:1px solid var(--w-line);padding:10px!important}#safelist-web-sketch .brand{padding:5px 8px 12px!important}#safelist-web-sketch .workspace{display:none}#safelist-web-sketch .nav{grid-template-columns:repeat(2,minmax(0,1fr))}#safelist-web-sketch .nav-item{font-size:12px;padding:8px!important}#safelist-web-sketch .content{padding:17px!important}#safelist-web-sketch .filters{grid-template-columns:1fr 1fr}#safelist-web-sketch .summary{gap:7px}#safelist-web-sketch .metric{padding:10px}#safelist-web-sketch .metric-value{font-size:18px}#safelist-web-sketch .epi-summary{grid-template-columns:1fr}#safelist-web-sketch .epi-form-grid{grid-template-columns:1fr}}
+@media(max-width:480px){#safelist-web-sketch .topbar{padding:12px}#safelist-web-sketch .top-tools{gap:7px}#safelist-web-sketch .summary{grid-template-columns:1fr}#safelist-web-sketch .filters{grid-template-columns:1fr}#safelist-web-sketch .results-head{align-items:flex-start;flex-direction:column}#safelist-web-sketch .avatar{width:29px;height:29px}}
+</style>
+<div class="shell">
+  <aside class="sidebar" aria-label="Menu principal">
+    <div class="brand">SAFELIST <span style="color:var(--w-muted);font-weight:400">· Web</span></div>
+    <div class="workspace">Gestão de segurança</div>
+    <nav class="nav" aria-label="Menu principal">
+      <button class="nav-item" data-view="overview" type="button"><span class="nav-mark"></span>Painel geral</button>
+      <button class="nav-item" data-view="programacoes" type="button"><span class="nav-mark"></span>Programações</button>
+      <button class="nav-item active" data-view="consulta" type="button" aria-current="page"><span class="nav-mark"></span>Consulta por parque</button>
+      <button class="nav-item" data-view="fornecedor" type="button"><span class="nav-mark"></span>Fornecedores</button>
+      <button class="nav-item" data-view="trabalhador" type="button"><span class="nav-mark"></span>Trabalhadores</button>
+      <button class="nav-item" data-view="ativos" type="button"><span class="nav-mark"></span>Veículos e máquinas</button>
+      <button class="nav-item" data-view="atividades" type="button"><span class="nav-mark"></span>Atividades</button>
+      <button class="nav-item" data-view="inspecoes" type="button"><span class="nav-mark"></span>Inspeções</button>
+      <button class="nav-item" data-view="incidentes" type="button"><span class="nav-mark"></span>Incidentes</button>
+      <button class="nav-item" data-view="epis" type="button"><span class="nav-mark"></span>EPIs</button>
+      <button class="nav-item" data-view="docs" type="button"><span class="nav-mark"></span>Documentos e requisitos</button>
+      <button class="nav-item" data-view="acessos" type="button"><span class="nav-mark"></span>Usuários e acessos</button>
+      <button class="nav-item" data-view="app" type="button"><span class="nav-mark"></span>App Android · sincronização</button>
+    </nav>
+  </aside>
+  <main class="main">
+    <header class="topbar"><strong>Segurança do trabalho <span id="breadcrumb" style="color:var(--w-muted)">/ Consulta por parque</span></strong><div class="top-tools"><span>Equipe de segurança</span><button id="theme-toggle" type="button" aria-label="Alternar para tema escuro" title="Alternar tema" style="min-height:34px;padding:0 10px">☾ <span id="theme-label">Escuro</span></button><span class="avatar" aria-label="Perfil do usuário">TS</span></div></header>
+    <div class="content">
+      <section id="query-view">
+      <h1 id="query-title">Consulta por parque</h1>
+      <p>Consulte documentos de fornecedores, trabalhadores, veículos e máquinas por local de operação. Cadastros são criados preferencialmente pela equipe de segurança local ou pela administração regional.</p>
+      <section aria-label="Filtros de consulta">
+        <div class="filters">
+          <div><label for="park-filter">Parque</label><select id="park-filter"><option value="">Selecione um parque</option><option value="Maral">Parque de Maral</option><option value="Terra Santa">Parque de Terra Santa</option></select></div>
+          <div><label for="kind-filter">Tipo de cadastro</label><select id="kind-filter"><option value="Todos">Todos os tipos</option><option value="Fornecedor">Fornecedores</option><option value="Trabalhador">Trabalhadores</option><option value="Veículo">Veículos</option><option value="Máquina">Máquinas</option><option value="Ativos">Veículos e máquinas</option></select></div>
+          <div><label for="state-filter">Situação documental</label><select id="state-filter"><option value="Todas">Todas as situações</option><option value="Regular">Regular</option><option value="Atenção">Precisa de atenção</option></select></div>
+          <button id="apply-filter" class="primary" type="button">Consultar</button>
+        </div>
+      </section>
+      <div id="query-empty" class="docs-info" role="status">Selecione um parque e clique em <strong>Consultar</strong> para ver os cadastros daquele local.<br><br>O TST pode solicitar consulta a outras unidades. O superior aprova o acesso, que fica registrado.<div class="docs-actions"><button id="query-access-request" type="button">Solicitar acesso a outra unidade</button></div><span id="query-access-message" aria-live="polite"></span></div>
+      <div id="query-results" hidden>
+      <div class="summary" aria-label="Resumo dos resultados"><div class="metric"><div class="metric-label">Cadastros no filtro</div><div id="metric-total" class="metric-value">0</div></div><div class="metric"><div class="metric-label">Documentação regular</div><div id="metric-ok" class="metric-value">0</div></div><div class="metric"><div class="metric-label">Precisam de atenção</div><div id="metric-pending" class="metric-value">0</div></div></div>
+      <div class="results-head"><h2>Cadastros encontrados</h2><span id="results-count" class="results-count" aria-live="polite">0 resultados</span></div>
+      <div class="table-wrap"><table aria-label="Cadastros e status da documentação"><thead><tr><th>Cadastro</th><th>Tipo</th><th>Empresa / responsável</th><th>Documentos</th><th>Status</th><th>Próximo vencimento</th></tr></thead><tbody id="result-rows"></tbody></table></div>
+      <p class="footnote">O QR permanece fixo. A leitura no app consulta o status atualizado deste cadastro.</p>
+      </div>
+      </section>
+      <section id="module-view" hidden aria-live="polite">
+        <h1 id="module-title"></h1><p id="module-description"></p>
+        <div id="module-content"></div>
+      </section>
+    </div>
+  </main>
+</div>
+<script>
+(function(){
+  const root=document.getElementById("safelist-web-sketch");
+  const themeButton=root.querySelector("#theme-toggle");
+  let currentTheme="light";
+  themeButton.addEventListener("click",function(){currentTheme=currentTheme==="light"?"dark":"light";root.style.colorScheme=currentTheme;root.dataset.theme=currentTheme;const dark=currentTheme==="dark";themeButton.innerHTML=dark?"☀ <span id=\"theme-label\">Claro</span>":"☾ <span id=\"theme-label\">Escuro</span>";themeButton.setAttribute("aria-label",dark?"Alternar para tema claro":"Alternar para tema escuro");});
+  const views={
+    overview:{title:"Painel geral",description:"Acompanhe rapidamente a situação dos parques e os itens que pedem atenção.",items:[["Documentos a vencer","8 documentos nos próximos 30 dias"],["Inspeções próximas","4 programadas para esta semana"],["Pendências","2 cadastros aguardam regularização"]]},
+    programacoes:{title:"Programações",description:"Configure inspeções periódicas pela web e acompanhe prazos por parque.",items:[["Inspeção de veículos","Parque de Maral · Mensal · Próxima: 04/11/2026"],["Inspeção de máquinas","Parque de Terra Santa · Trimestral · Próxima: 15/11/2026"],["Revisão de documentação","Ambos os parques · Mensal · Próxima: 01/11/2026"]]},
+    inspecoes:{title:"Inspeções",description:"Veja inspeções realizadas, resultados e ações de correção.",items:[["INS-TS-014","Terra Santa · Máquina · Concluída"],["INS-MR-022","Maral · Veículo · Aguardando validação"],["INS-TS-019","Terra Santa · Equipamento · Com pendência"]]},
+    incidentes:{title:"Incidentes",description:"Acompanhe comunicações, investigações e não conformidades vinculadas.",items:[["INC-TS-026","Terra Santa · Investigação em andamento"],["NC-TS-001","Ação corretiva · Pendente · Prazo 30/10/2026"],["NC-MR-004","Ação corretiva · Aguardando validação"]]},
+    epis:{title:"Gestão de EPIs",description:"Consulte estoque, entregas, CA e registros por trabalhador e parque.",items:[["Capacete classe B","Estoque 24 · CA conferido"],["Cinturão paraquedista","Estoque 8 · 2 entregas recentes"],["Luva isolante","Estoque 12 · Revisão programada"]]},
+    acessos:{title:"Usuários e acessos",description:"Login Google, perfis, hierarquia de gestores e permissões de consulta e aprovação.",items:[["Conta corporativa Google","Identifica o usuário e mantém o acesso da própria conta"],["Gestores e hierarquia","Relação gestor-equipe pode vir do diretório corporativo quando disponível; caso contrário, é configurada pela administração"],["Equipe de segurança","Acesso conforme unidade e função; consulta a outras unidades depende de aprovação do superior"],["Contratadas","Acesso à própria área para envio e atualização de documentos e registros"]]}
+  };
+  function renderDocsModule(){
+    const host=root.querySelector("#module-content");
+    host.innerHTML=`
+      <div class="docs-info">Organize documentos da empresa, recebimentos de fornecedores e evidências ligadas a requisitos legais e auditorias ISO. Cada público acessa apenas sua área.</div>
+      <div class="docs-tabs" role="tablist" aria-label="Documentos e requisitos">
+        <button class="active" type="button" data-doc-tab="company" role="tab" aria-selected="true">Minha empresa</button>
+        <button type="button" data-doc-tab="supplier" role="tab" aria-selected="false">Fornecedores</button>
+        <button type="button" data-doc-tab="iso" role="tab" aria-selected="false">Requisitos e auditorias ISO</button>
+      </div>
+      <section id="docs-company-view" role="tabpanel">
+        <div class="results-head"><h2>Documentação da empresa</h2><span class="results-count">Acesso interno</span></div>
+        <div class="table-wrap"><table><thead><tr><th>Documento</th><th>Unidade</th><th>Responsável</th><th>Validade</th><th>Status</th></tr></thead><tbody>
+          <tr><td>Programa de Gerenciamento de Riscos</td><td>Terra Santa</td><td>Segurança do trabalho</td><td>18/12/2026</td><td><span class="state">Aprovado</span></td></tr>
+          <tr><td>Procedimento de trabalho em altura</td><td>Maral</td><td>Segurança do trabalho</td><td>10/11/2026</td><td><span class="state pending">Revisar</span></td></tr>
+          <tr><td>Plano de atendimento a emergências</td><td>Terra Santa</td><td>Gestão da unidade</td><td>15/03/2027</td><td><span class="state">Aprovado</span></td></tr>
+        </tbody></table></div>
+        <div class="docs-actions"><button class="primary" type="button" data-doc-action="empresa">Adicionar documento</button></div>
+      </section>
+      <section id="docs-supplier-view" role="tabpanel" hidden>
+        <div class="results-head"><h2>Documentos de fornecedores</h2><span class="results-count">Acesso compartilhado por empresa</span></div>
+        <div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Requisito</th><th>Parque</th><th>Envio</th><th>Status da análise</th></tr></thead><tbody>
+          <tr><td>Ventos do Norte Ltda.</td><td>Comprovante de capacitação da equipe</td><td>Maral</td><td>27/10/2026</td><td><span class="state pending">Em conferência</span></td></tr>
+          <tr><td>Flexwind Serviços</td><td>Documentação de veículo</td><td>Terra Santa</td><td>26/10/2026</td><td><span class="state pending">Ajuste solicitado</span></td></tr>
+          <tr><td>Flexwind Serviços</td><td>Lista de trabalhadores alocados</td><td>Terra Santa</td><td>24/10/2026</td><td><span class="state">Aprovado</span></td></tr>
+        </tbody></table></div>
+        <div class="docs-actions"><button type="button" data-doc-action="solicitar">Solicitar documentação</button><button type="button" data-doc-action="acesso">Ver como fornecedor</button></div>
+        <p class="docs-note">O fornecedor envia documentos apenas para os requisitos e contratos liberados para sua empresa. A equipe interna confere e registra aprovação ou pedido de ajuste.</p>
+      </section>
+      <section id="docs-iso-view" role="tabpanel" hidden>
+        <div class="results-head"><h2>Requisitos e evidências de auditoria</h2><span class="results-count">Acesso interno</span></div>
+        <div class="table-wrap"><table><thead><tr><th>Norma / requisito</th><th>Unidade</th><th>Evidência associada</th><th>Responsável</th><th>Status</th></tr></thead><tbody>
+          <tr><td>ISO 45001 · Competência</td><td>Maral</td><td>Registros de treinamento</td><td>Segurança do trabalho</td><td><span class="state">Evidência anexada</span></td></tr>
+          <tr><td>ISO 45001 · Controle operacional</td><td>Terra Santa</td><td>Inspeções e liberações</td><td>Gestão da unidade</td><td><span class="state pending">Evidência pendente</span></td></tr>
+          <tr><td>Requisito legal · Gestão de EPI</td><td>Ambos</td><td>Fichas de entrega e estoque</td><td>Almoxarifado</td><td><span class="state pending">Em revisão</span></td></tr>
+        </tbody></table></div>
+        <div class="docs-actions"><button class="primary" type="button" data-doc-action="evidencia">Associar evidência</button></div>
+        <p class="docs-note">Os requisitos legais são consultados na fonte Greenlegis. O Safelist mantém apenas registros e evidências internos vinculados à auditoria.</p>
+      </section>
+      <p id="docs-message" class="footnote" role="status" aria-live="polite"></p>
+      <div class="dash-panel"><h2>Consulta externa · somente leitura</h2><p>Quando houver conexão autorizada, o Safelist poderá consultar os requisitos e documentos legais na fonte, mostrando situação, origem e data da última consulta. Os dados da fonte não serão alterados pelo Safelist.</p><div class="docs-actions"><button type="button" data-doc-action="consulta-api">Consultar Greenlegis</button></div><p class="docs-note">Demonstração: a conexão real depende de acesso autorizado e de uma API que disponibilize esses dados. A página pública da Greenlegis menciona API para integração com BI, mas não confirma uma API específica para consulta de requisitos.</p></div>
+    `;
+    function showDocTab(tab){host.querySelectorAll("[data-doc-tab]").forEach(function(button){const active=button.dataset.docTab===tab;button.classList.toggle("active",active);button.setAttribute("aria-selected",String(active));});["company","supplier","iso"].forEach(function(name){host.querySelector("#docs-"+name+"-view").hidden=name!==tab;});}
+    host.querySelectorAll("[data-doc-tab]").forEach(function(button){button.addEventListener("click",function(){showDocTab(button.dataset.docTab);});});
+    host.querySelectorAll("[data-doc-action]").forEach(function(button){button.addEventListener("click",function(){host.querySelector("#docs-message").textContent=button.dataset.docAction==="solicitar"?"Solicitação preparada na demonstração; envio real depende dos acessos do fornecedor.":button.dataset.docAction==="acesso"?"Prévia demonstrativa da área restrita do fornecedor.":button.dataset.docAction==="consulta-api"?"Consulta demonstrativa somente para leitura. A conexão real depende de acesso autorizado.":"Ação disponível no fluxo demonstrativo de documentos.";});});
+  }  function renderDashboard(){
+    const host=root.querySelector("#module-content");
+    host.innerHTML=`
+      <div class="dash-controls">
+        <div><label for="dashboard-park">Parque</label><select id="dashboard-park"><option value="Todos">Todos os parques</option><option value="Maral">Parque de Maral</option><option value="Terra Santa">Parque de Terra Santa</option></select></div>
+        <div><label for="dashboard-period">Período das inspeções e ocorrências</label><select id="dashboard-period"><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="365">Ano atual</option></select></div>
+      </div>
+      <div class="dash-grid" aria-label="Indicadores gerais">
+        <div class="metric"><div class="metric-label">Cadastros no parque</div><div class="metric-value" id="dash-records">8</div></div>
+        <div class="metric"><div class="metric-label">Documentos aprovados</div><div class="metric-value" id="dash-docs">39/42</div><div class="dash-small" id="dash-docs-note">3 pendentes</div></div>
+        <div class="metric"><div class="metric-label">Inspeções concluídas</div><div class="metric-value" id="dash-inspections">9/12</div><div class="dash-small" id="dash-inspections-note">75% no período</div></div>
+        <div class="metric"><div class="metric-label">Não conformidades abertas</div><div class="metric-value" id="dash-nc">5</div><div class="dash-small" id="dash-nc-note">2 fora do prazo</div></div>
+      </div>
+      <div class="dash-split">
+        <section class="dash-panel"><h2>Documentação por tipo</h2><div id="dash-doc-bars" aria-live="polite"></div></section>
+        <section class="dash-panel"><h2>Resumo por parque</h2><div class="table-wrap"><table><thead><tr><th>Parque</th><th>Cadastros</th><th>Docs aprovados</th><th>Pendentes</th></tr></thead><tbody id="dash-park-rows"></tbody></table></div></section>
+      </div>
+      <section class="dash-panel"><h2>Itens que pedem atenção</h2><div class="table-wrap"><table><thead><tr><th>Cadastro</th><th>Parque</th><th>Tipo</th><th>Documentos</th><th>Próximo vencimento</th></tr></thead><tbody id="dash-attention-rows"></tbody></table></div></section>
+      <div class="dash-split">
+        <section class="dash-panel"><h2>Inspeções programadas</h2><div id="dash-schedule"></div></section>
+        <section class="dash-panel"><h2>Alertas de EPI</h2><div id="dash-ppe"></div></section>
+      </div>
+      <p class="footnote">Indicadores e registros são demonstrativos. A seleção de parque atualiza os resumos e as pendências.</p>
+    `;
+    const inspectionStats={
+      "30":{"Todos":[9,12],"Maral":[5,6],"Terra Santa":[4,6]},
+      "90":{"Todos":[24,30],"Maral":[12,15],"Terra Santa":[12,15]},
+      "365":{"Todos":[72,88],"Maral":[36,44],"Terra Santa":[36,44]}
+    };
+    function update(){
+      const park=host.querySelector("#dashboard-park").value;const period=host.querySelector("#dashboard-period").value;
+      const selected=records.filter(function(r){return park==="Todos"||r.park===park;});
+      const approved=selected.reduce(function(sum,r){const parts=r.docs.match(/(\d+) de (\d+)/);return sum+(parts?Number(parts[1]):0);},0);
+      const required=selected.reduce(function(sum,r){const parts=r.docs.match(/(\d+) de (\d+)/);return sum+(parts?Number(parts[2]):0);},0);
+      const pending=required-approved;const stat=inspectionStats[period][park];const ncCount=park==="Todos"?5:park==="Maral"?2:3;const overdue=park==="Todos"?2:1;
+      host.querySelector("#dash-records").textContent=String(selected.length);
+      host.querySelector("#dash-docs").textContent=approved+"/"+required;host.querySelector("#dash-docs-note").textContent=pending+" documentos pendentes";
+      host.querySelector("#dash-inspections").textContent=stat[0]+"/"+stat[1];host.querySelector("#dash-inspections-note").textContent=Math.round(stat[0]/stat[1]*100)+"% concluídas no período";
+      host.querySelector("#dash-nc").textContent=String(ncCount);host.querySelector("#dash-nc-note").textContent=overdue+" fora do prazo";
+      const types=["Fornecedor","Trabalhador","Veículo","Máquina"];const bars=host.querySelector("#dash-doc-bars");bars.innerHTML="";
+      types.forEach(function(type){const group=selected.filter(function(r){return r.kind===type;});const ok=group.reduce(function(sum,r){const parts=r.docs.match(/(\d+) de (\d+)/);return sum+(parts?Number(parts[1]):0);},0);const all=group.reduce(function(sum,r){const parts=r.docs.match(/(\d+) de (\d+)/);return sum+(parts?Number(parts[2]):0);},0);const pct=all?Math.round(ok/all*100):0;const row=document.createElement("div");row.className="dash-bar-row";row.innerHTML='<span>'+type+'</span><div class="dash-track" role="progressbar" aria-label="'+type+' com documentos aprovados" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100"><div class="dash-fill" style="width:'+pct+'%"></div></div><span>'+ok+'/'+all+'</span>';bars.appendChild(row);});
+      const parks=park==="Todos"?["Maral","Terra Santa"]:[park];const parkBody=host.querySelector("#dash-park-rows");parkBody.innerHTML="";
+      parks.forEach(function(name){const group=records.filter(function(r){return r.park===name;});const ok=group.reduce(function(sum,r){const parts=r.docs.match(/(\d+) de (\d+)/);return sum+(parts?Number(parts[1]):0);},0);const all=group.reduce(function(sum,r){const parts=r.docs.match(/(\d+) de (\d+)/);return sum+(parts?Number(parts[2]):0);},0);const tr=document.createElement("tr");[name,group.length,ok+"/"+all,String(all-ok)].forEach(function(v){const td=document.createElement("td");td.textContent=String(v);tr.appendChild(td);});parkBody.appendChild(tr);});
+      const attention=selected.filter(function(r){return r.state==="Atenção";});const attentionBody=host.querySelector("#dash-attention-rows");attentionBody.innerHTML="";
+      attention.forEach(function(r){const parts=r.docs.match(/(\d+) de (\d+)/);const tr=document.createElement("tr");[r.name,r.park,r.kind,parts?parts[1]+"/"+parts[2]:r.docs,r.due].forEach(function(v){const td=document.createElement("td");td.textContent=String(v);if(v==="Documento pendente")td.className="dash-attention";tr.appendChild(td);});attentionBody.appendChild(tr);});
+      const schedule=host.querySelector("#dash-schedule");schedule.innerHTML="";const sched=park==="Todos"?[["Maral","5 de 6","1 aguardando"],["Terra Santa","4 de 6","2 aguardando"]]:park==="Maral"?[["Maral","5 de 6","1 aguardando"]]:[["Terra Santa","4 de 6","2 aguardando"]];sched.innerHTML=sched.map(function(x){return '<div class="dash-bar-row"><span>'+x[0]+'</span><div>'+x[1]+' <span class="dash-small">concluídas</span></div><span>'+x[2]+'</span></div>';}).join("");
+      const ppe=host.querySelector("#dash-ppe");ppe.innerHTML="";const ppeItems=park==="Maral"?[]:park==="Terra Santa"?[["Cinturão paraquedista","4 em estoque · mínimo 6"]]:[["Cinturão paraquedista","Terra Santa · 4 em estoque · mínimo 6"]];
+      if(ppeItems.length){ppeItems.forEach(function(item){const row=document.createElement("div");row.className="dash-bar-row";row.innerHTML='<span>'+item[0]+'</span><span class="dash-attention">'+item[1]+'</span>';ppe.appendChild(row);});}else{ppe.textContent="Nenhum alerta de estoque neste filtro.";}
+    }
+    host.querySelector("#dashboard-park").addEventListener("change",update);host.querySelector("#dashboard-period").addEventListener("change",update);update();
+  }  let epiStock=[
+    {id:"cap",name:"Capacete classe B",ca:"CA 498",lot:"Válido até 06/2027",stock:24,min:8,park:"Maral",replace:"12 meses"},
+    {id:"belt",name:"Cinturão paraquedista",ca:"CA 39.125",lot:"Válido até 03/2027",stock:4,min:6,park:"Terra Santa",replace:"12 meses"},
+    {id:"glove",name:"Luva de proteção",ca:"CA 21.450",lot:"Válido até 09/2026",stock:12,min:10,park:"Maral",replace:"6 meses"},
+    {id:"boot",name:"Botina de segurança",ca:"CA 44.001",lot:"Válido até 12/2027",stock:18,min:6,park:"Terra Santa",replace:"12 meses"}
+  ];
+  let epiDeliveries=[{date:"27/10/2026",worker:"Lucas Ferreira Costa",epi:"Capacete classe B",qty:1,reason:"Entrega inicial",park:"Maral"},{date:"26/10/2026",worker:"Ana Paula Nascimento",epi:"Luva de proteção",qty:2,reason:"Substituição",park:"Terra Santa"}];
+  function renderEpiModule(){
+    const host=root.querySelector("#module-content");
+    host.innerHTML=`
+      <div class="epi-summary">
+        <div class="metric"><div class="metric-label">Entregas neste mês</div><div class="metric-value" id="epi-month-count">${epiDeliveries.length}</div></div>
+        <div class="metric"><div class="metric-label">EPIs próximos da reposição</div><div class="metric-value">5</div></div>
+        <div class="metric"><div class="metric-label">Itens abaixo do estoque mínimo</div><div class="metric-value">1</div></div>
+      </div>
+      <div class="epi-tabs" role="tablist" aria-label="Gestão de EPIs">
+        <button class="active" type="button" data-epi-tab="stock" role="tab" aria-selected="true">Estoque</button>
+        <button type="button" data-epi-tab="delivery" role="tab" aria-selected="false">Registrar entrega</button>
+        <button type="button" data-epi-tab="history" role="tab" aria-selected="false">Histórico de entregas</button>
+      </div>
+      <section id="epi-stock-view" role="tabpanel">
+        <div class="filters" style="grid-template-columns:1fr auto">
+          <div><label for="epi-park">Parque / almoxarifado</label><select id="epi-park"><option value="Todos">Todos os parques</option><option>Maral</option><option>Terra Santa</option></select></div>
+          <button id="epi-go-delivery" class="primary" type="button">Registrar entrega</button>
+        </div>
+        <div class="epi-table"><table><thead><tr><th>EPI</th><th>CA</th><th>Validade do lote</th><th>Estoque</th><th>Mínimo</th><th>Reposição prevista</th><th>Local</th></tr></thead><tbody id="epi-stock-rows"></tbody></table></div>
+        <p class="epi-note">O catálogo guarda o CA, lote, validade informada pelo fabricante, saldo e período de reposição.</p>
+      </section>
+      <section id="epi-delivery-view" role="tabpanel" hidden>
+        <div class="epi-form"><h2>Registrar entrega de EPI</h2><p>Selecione a pessoa e o item; a entrega entra no histórico individual e atualiza o saldo do almoxarifado.</p>
+          <div class="epi-form-grid">
+            <div><label for="epi-worker">Trabalhador</label><select id="epi-worker"><option value="">Selecionar trabalhador</option><option>Lucas Ferreira Costa</option><option>Ana Paula Nascimento</option><option>José Rian Silva de Oliveira</option></select></div>
+            <div><label for="epi-delivery-park">Parque</label><select id="epi-delivery-park"><option>Maral</option><option>Terra Santa</option></select></div>
+            <div><label for="epi-item">EPI</label><select id="epi-item"></select></div>
+            <div><label for="epi-quantity">Quantidade</label><input id="epi-quantity" type="number" min="1" value="1"></div>
+            <div><label for="epi-reason">Motivo</label><select id="epi-reason"><option>Entrega inicial</option><option>Substituição por desgaste</option><option>Substituição por dano</option><option>Extravio</option></select></div>
+            <div><label for="epi-date">Data da entrega</label><input id="epi-date" type="date"></div>
+          </div>
+          <label class="epi-check"><input id="epi-receipt" type="checkbox"><span>Confirmo que a entrega foi realizada e que o trabalhador recebeu orientação de uso.</span></label>
+          <button id="epi-save-delivery" class="primary" type="button">Salvar entrega e gerar recibo</button>
+          <div id="epi-message" class="epi-message" role="status" aria-live="polite"></div>
+          <p class="epi-note">Nesta fase, o aceite é um registro demonstrativo. Assinatura digital e operação offline podem ser detalhadas depois.</p>
+        </div>
+      </section>
+      <section id="epi-history-view" role="tabpanel" hidden><div class="epi-table"><table><thead><tr><th>Data</th><th>Trabalhador</th><th>EPI</th><th>Qtd.</th><th>Motivo</th><th>Parque</th></tr></thead><tbody id="epi-history-rows"></tbody></table></div></section>
+    `;
+    function showEpiTab(tab){
+      host.querySelectorAll("[data-epi-tab]").forEach(function(button){const active=button.dataset.epiTab===tab;button.classList.toggle("active",active);button.setAttribute("aria-selected",String(active));});
+      ["stock","delivery","history"].forEach(function(name){host.querySelector("#epi-"+name+"-view").hidden=name!==tab;});
+    }
+    function renderEpiStock(){
+      const park=host.querySelector("#epi-park").value;
+      const tbody=host.querySelector("#epi-stock-rows");tbody.innerHTML="";
+      epiStock.filter(function(item){return park==="Todos"||item.park===park;}).forEach(function(item){const tr=document.createElement("tr");[item.name,item.ca,item.lot,String(item.stock),String(item.min),item.replace,item.park].forEach(function(value){const td=document.createElement("td");td.textContent=value;tr.appendChild(td);});tbody.appendChild(tr);});
+    }
+    function renderEpiHistory(){
+      const tbody=host.querySelector("#epi-history-rows");tbody.innerHTML="";
+      epiDeliveries.forEach(function(item){const tr=document.createElement("tr");[item.date,item.worker,item.epi,String(item.qty),item.reason,item.park].forEach(function(value){const td=document.createElement("td");td.textContent=value;tr.appendChild(td);});tbody.appendChild(tr);});
+    }
+    const itemSelect=host.querySelector("#epi-item");
+    epiStock.forEach(function(item){const option=document.createElement("option");option.value=item.id;option.textContent=item.name+" · "+item.ca+" · saldo "+item.stock;itemSelect.appendChild(option);});
+    host.querySelectorAll("[data-epi-tab]").forEach(function(button){button.addEventListener("click",function(){showEpiTab(button.dataset.epiTab);if(button.dataset.epiTab==="history")renderEpiHistory();});});
+    host.querySelector("#epi-park").addEventListener("change",renderEpiStock);
+    host.querySelector("#epi-go-delivery").addEventListener("click",function(){showEpiTab("delivery");});
+    host.querySelector("#epi-save-delivery").addEventListener("click",function(){
+      const worker=host.querySelector("#epi-worker").value;const quantity=Number(host.querySelector("#epi-quantity").value);const item=epiStock.find(function(value){return value.id===itemSelect.value;});const accepted=host.querySelector("#epi-receipt").checked;
+      if(!worker||!item||!Number.isInteger(quantity)||quantity<1){host.querySelector("#epi-message").textContent="Selecione o trabalhador, o EPI e uma quantidade válida.";return;}
+      if(!accepted){host.querySelector("#epi-message").textContent="Confirme o recebimento antes de salvar a entrega.";return;}
+      if(quantity>item.stock){host.querySelector("#epi-message").textContent="O saldo disponível é insuficiente para esta entrega.";return;}
+      const dateValue=host.querySelector("#epi-date").value;const date=dateValue?dateValue.split("-").reverse().join("/"):new Intl.DateTimeFormat("pt-BR").format(new Date());const park=host.querySelector("#epi-delivery-park").value;const reason=host.querySelector("#epi-reason").value;
+      item.stock-=quantity;epiDeliveries.unshift({date:date,worker:worker,epi:item.name,qty:quantity,reason:reason,park:park});
+      host.querySelector("#epi-message").textContent="Entrega registrada no histórico de demonstração. Recibo pronto para conferência.";host.querySelector("#epi-month-count").textContent=String(epiDeliveries.length);host.querySelector("#epi-receipt").checked=false;host.querySelector("#epi-quantity").value="1";renderEpiStock();
+    });
+    renderEpiStock();
+  }
+  let activityItems=[
+    {name:"Trabalho em altura",park:"Ambos os parques",risks:"Queda de altura; queda de objetos",controls:"Análise de risco; sistema de ancoragem; resgate disponível",checks:[{text:"Análise de risco revisada com a equipe",photo:true},{text:"Cinturão e talabarte inspecionados",photo:true},{text:"Ponto de ancoragem validado",photo:true}]},
+    {name:"Intervenção elétrica",park:"Ambos os parques",risks:"Choque elétrico; arco elétrico",controls:"Desenergização; bloqueio e etiquetagem; teste de ausência de tensão",checks:[{text:"Permissão de trabalho liberada",photo:false},{text:"Bloqueio identificado e registrado",photo:true},{text:"Ausência de tensão confirmada",photo:true}]},
+    {name:"Deslocamento com veículo",park:"Terra Santa",risks:"Colisão; atropelamento; saída de pista",controls:"Inspeção pré-uso; velocidade segura; rota autorizada",checks:[{text:"Checklist pré-uso realizado",photo:false},{text:"Veículo e documentação em situação regular",photo:true}]}
+  ];
+  function renderActivities(){
+    const host=root.querySelector("#module-content");
+    host.innerHTML=`<div class="docs-info">Configure aqui o roteiro de cada atividade. No aplicativo, a equipe verá os riscos, medidas de controle e itens de checklist definidos para a atividade.</div><div class="epi-form"><div class="epi-form-grid"><div><label for="activity-select">Atividade cadastrada</label><select id="activity-select"></select></div><div><label for="activity-park">Parque</label><select id="activity-park"><option>Ambos os parques</option><option>Maral</option><option>Terra Santa</option></select></div><div><label for="activity-name">Nome da atividade</label><input id="activity-name" type="text"></div><div><label for="activity-risks">Riscos envolvidos</label><input id="activity-risks" type="text"></div><div style="grid-column:1/-1"><label for="activity-controls">Medidas de controle</label><textarea id="activity-controls" rows="2" style="width:100%;border:1px solid var(--w-line);border-radius:9px;padding:10px;background:var(--w-bg);color:var(--w-ink);font:inherit"></textarea></div></div><div class="results-head"><h2>Checklist da atividade</h2><button type="button" id="activity-add-check">Adicionar item</button></div><div class="table-wrap"><table style="min-width:560px"><thead><tr><th>Item de verificação</th><th>Comprovação por foto</th><th></th></tr></thead><tbody id="activity-checks"></tbody></table></div><div class="docs-actions"><button class="primary" type="button" id="activity-save">Salvar configuração</button><button type="button" id="activity-publish">Publicar para o app</button></div><p id="activity-message" class="epi-message" role="status" aria-live="polite"></p><p class="epi-note">Demonstração local: salvar e publicar afetam apenas esta prévia. A sincronização real exige conectar o sistema ao aplicativo.</p></div>`;
+    const select=host.querySelector("#activity-select");
+    function load(index){select.innerHTML="";activityItems.forEach(function(a,i){const o=document.createElement("option");o.value=i;o.textContent=a.name;select.appendChild(o);});select.value=String(index);const a=activityItems[index];host.querySelector("#activity-name").value=a.name;host.querySelector("#activity-park").value=a.park;host.querySelector("#activity-risks").value=a.risks;host.querySelector("#activity-controls").value=a.controls;const body=host.querySelector("#activity-checks");body.innerHTML="";a.checks.forEach(function(c,i){const tr=document.createElement("tr");const td=document.createElement("td");const input=document.createElement("input");input.type="text";input.value=c.text;input.setAttribute("aria-label","Item de verificação");input.style="width:100%;min-height:36px;border:1px solid var(--w-line);border-radius:7px;padding:7px;background:var(--w-bg);color:var(--w-ink)";td.appendChild(input);tr.appendChild(td);const photo=document.createElement("td");const checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.checked=c.photo;checkbox.setAttribute("aria-label","Exigir foto como comprovação");photo.appendChild(checkbox);tr.appendChild(photo);const del=document.createElement("td");const btn=document.createElement("button");btn.type="button";btn.textContent="Remover";btn.addEventListener("click",function(){save();activityItems[index].checks.splice(i,1);load(index);});del.appendChild(btn);tr.appendChild(del);body.appendChild(tr);});}
+    function save(){const i=Number(select.value);const a=activityItems[i];a.name=host.querySelector("#activity-name").value.trim()||"Nova atividade";a.park=host.querySelector("#activity-park").value;a.risks=host.querySelector("#activity-risks").value.trim();a.controls=host.querySelector("#activity-controls").value.trim();a.checks=Array.from(host.querySelectorAll("#activity-checks tr")).map(function(tr){return{text:tr.querySelector("input[type=text]").value.trim(),photo:tr.querySelector("input[type=checkbox]").checked};}).filter(function(x){return x.text;});}
+    load(0);select.addEventListener("change",function(){load(Number(select.value));});
+    host.querySelector("#activity-add-check").addEventListener("click",function(){save();activityItems[Number(select.value)].checks.push({text:"Novo item de verificação",photo:false});load(Number(select.value));});
+    host.querySelector("#activity-save").addEventListener("click",function(){save();host.querySelector("#activity-message").textContent="Configuração salva nesta demonstração.";});
+    host.querySelector("#activity-publish").addEventListener("click",function(){save();host.querySelector("#activity-message").textContent="Atividade marcada para publicação no app (demonstração).";});
+    const suggestion=document.createElement("button");suggestion.type="button";suggestion.textContent="Sugerir controles da biblioteca";suggestion.style.marginTop="8px";host.querySelector("#activity-risks").parentElement.appendChild(suggestion);
+    suggestion.addEventListener("click",function(){const risk=host.querySelector("#activity-risks").value.toLowerCase();const controls=risk.includes("altura")?"Análise de risco; sistema de ancoragem; cinturão e talabarte inspecionados; resgate disponível.":risk.includes("elétr")?"Desenergização; bloqueio e etiquetagem; teste de ausência de tensão; EPI adequado.":risk.includes("veículo")||risk.includes("colisão")?"Inspeção pré-uso; rota autorizada; velocidade segura; cinto de segurança.":"Selecione um risco conhecido (altura, elétrico ou veículo) para sugerir controles da biblioteca.";if(controls.startsWith("Selecione")){host.querySelector("#activity-message").textContent=controls;return;}host.querySelector("#activity-controls").value=controls;host.querySelector("#activity-message").textContent="Sugestão da biblioteca preenchida; revise antes de salvar.";});
+    host.querySelector("#activity-publish").textContent="Enviar ao gestor para aprovação";
+    const approve=document.createElement("button");approve.type="button";approve.textContent="Aprovar e publicar (gestor)";approve.addEventListener("click",function(){save();host.querySelector("#activity-message").textContent="Checklist aprovado e publicado para o app nesta demonstração.";});host.querySelector("#activity-publish").parentElement.appendChild(approve);
+    host.querySelector("#activity-publish").addEventListener("click",function(){host.querySelector("#activity-message").textContent="Alterações enviadas ao gestor imediato. A versão publicada continua ativa até a aprovação.";});
+  }
+  function renderInspections(){
+    const host=root.querySelector("#module-content");
+    const objects=[{object:"Cinta de içamento",type:"Acessório de içamento",park:"Terra Santa",status:"Aguardando validação"},{object:"Manilha 3,25 t",type:"Acessório de içamento",park:"Terra Santa",status:"Regular"},{object:"Catraca de amarração",type:"Acessório de içamento",park:"Maral",status:"Inspeção pendente"},{object:"Plataforma elevatória",type:"Máquina",park:"Maral",status:"Regular"},{object:"Caminhonete 4x4",type:"Veículo leve",park:"Maral",status:"Inspeção pendente"},{object:"Caminhão munck",type:"Veículo pesado",park:"Terra Santa",status:"Regular"},{object:"Detector de tensão",type:"Equipamento",park:"Terra Santa",status:"Aguardando validação"}];
+    host.innerHTML=`<div class="docs-info">As inspeções podem ser organizadas pelo tipo de objeto. Os acessórios de içamento também entram no catálogo, com checklist próprio.</div><div class="filters" style="grid-template-columns:1fr auto"><div><label for="object-type-filter">Tipo de objeto</label><select id="object-type-filter"><option value="Todos">Todos os objetos</option><option>Acessório de içamento</option><option>Máquina</option><option>Equipamento</option><option>Veículo leve</option><option>Veículo pesado</option></select></div><span id="object-count" class="results-count" aria-live="polite"></span></div><div class="table-wrap"><table><thead><tr><th>Objeto</th><th>Tipo</th><th>Parque</th><th>Status da inspeção</th></tr></thead><tbody id="object-inspection-rows"></tbody></table></div><p class="footnote">Exemplos de acessórios de içamento: cintas, manilhas, catracas e itens definidos pela equipe de segurança.</p>`;
+    function update(){const type=host.querySelector("#object-type-filter").value;const list=objects.filter(function(o){return type==="Todos"||o.type===type;});const body=host.querySelector("#object-inspection-rows");body.innerHTML="";list.forEach(function(o){const tr=document.createElement("tr");[o.object,o.type,o.park,o.status].forEach(function(v){const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});body.appendChild(tr);});host.querySelector("#object-count").textContent=list.length+" objetos";}
+    host.querySelector("#object-type-filter").addEventListener("change",update);update();
+  }
+  function renderAndroidSync(){
+    const host=root.querySelector("#module-content");
+    host.innerHTML=`<div class="docs-info">No Android, a sincronização é iniciada pela pessoa quando desejar. Os registros continuam salvos no aparelho até serem enviados ou atualizados.</div><div class="epi-form" style="max-width:560px;margin:18px auto"><div style="text-align:center;padding:8px 4px 18px"><div style="font-size:14px;font-weight:600">Menu principal · App Android</div><p style="margin-top:6px">Acesso rápido às atividades e aos registros de campo.</p></div><div class="module-row"><strong>Inspeções e atividades</strong><span>Disponível no aparelho</span></div><div class="module-row"><strong>Comunicações de incidentes</strong><span id="sync-pending">2 registros aguardando envio</span></div><div class="module-row"><strong>Última sincronização</strong><span id="sync-last">Hoje, 07:42</span></div><div style="display:flex;justify-content:center;padding:18px 0 4px"><button id="sync-now" class="primary" type="button">⟳ Sincronizar agora</button></div><div id="sync-message" class="epi-message" role="status" aria-live="polite" style="text-align:center"></div><p class="epi-note" style="text-align:center">Ao consultar um QR com internet, o app busca o status mais recente disponível. Sem conexão, mostra a data da última atualização guardada.</p></div>`;
+    host.querySelector("#sync-now").addEventListener("click",function(){const now=new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short"}).format(new Date());host.querySelector("#sync-last").textContent=now;host.querySelector("#sync-pending").textContent="Nenhum registro aguardando envio";host.querySelector("#sync-message").textContent="Sincronização concluída nesta demonstração.";});
+  }
+  const incidentRecords=[
+    {id:"INC-TS-026",date:"28/10/2026",park:"Terra Santa",type:"Quase acidente",title:"Quase colisão durante deslocamento",person:"Equipe de manutenção",status:"Em investigação",owner:"TST local"},
+    {id:"INC-TS-025",date:"26/10/2026",park:"Terra Santa",type:"Acidente veicular",title:"Colisão com danos materiais",person:"José Rian Silva de Oliveira",status:"Aguardando aprovação",owner:"Gestor imediato"},
+    {id:"INC-MR-018",date:"24/10/2026",park:"Maral",type:"Condição insegura",title:"Proteção temporária deslocada",person:"Inspeção de rotina",status:"Ação corretiva pendente",owner:"Supervisor da área"},
+    {id:"INC-MR-017",date:"20/10/2026",park:"Maral",type:"Acidente com lesão",title:"Lesão leve durante movimentação",person:"Trabalhador próprio",status:"Concluído",owner:"Equipe de segurança"},
+    {id:"INC-TS-024",date:"18/10/2026",park:"Terra Santa",type:"Incidente ambiental",title:"Pequeno vazamento contido",person:"Equipe de operação",status:"Aguardando aprovação",owner:"Gestor imediato"}
+  ];
+  function renderIncidents(){
+    const host=root.querySelector("#module-content");
+    host.innerHTML=`<div class="docs-info">Filtre as comunicações e investigações para localizar ocorrências e acompanhar ações corretivas.</div><div class="filters"><div><label for="incident-park">Parque</label><select id="incident-park"><option value="Todos">Todos os parques</option><option>Maral</option><option>Terra Santa</option></select></div><div><label for="incident-status">Status</label><select id="incident-status"><option value="Todos">Todos os status</option><option>Aguardando aprovação</option><option>Em investigação</option><option>Ação corretiva pendente</option><option>Concluído</option></select></div><div><label for="incident-type">Tipo de ocorrência</label><select id="incident-type"><option value="Todos">Todos os tipos</option><option>Acidente com lesão</option><option>Acidente veicular</option><option>Quase acidente</option><option>Condição insegura</option><option>Incidente ambiental</option></select></div><button id="incident-search" class="primary" type="button">Consultar</button></div><div id="incident-empty" class="docs-info" role="status">Ajuste os filtros e clique em <strong>Consultar</strong> para exibir as ocorrências.</div><div id="incident-results" hidden><div class="summary"><div class="metric"><div class="metric-label">Ocorrências encontradas</div><div class="metric-value" id="incident-total">0</div></div><div class="metric"><div class="metric-label">Em andamento</div><div class="metric-value" id="incident-open">0</div></div><div class="metric"><div class="metric-label">Aguardando gestor</div><div class="metric-value" id="incident-approval">0</div></div></div><div class="table-wrap"><table style="min-width:850px"><thead><tr><th>Ocorrência</th><th>Data</th><th>Parque</th><th>Tipo</th><th>Descrição breve</th><th>Status</th><th>Responsável atual</th></tr></thead><tbody id="incident-rows"></tbody></table></div><p class="footnote">Os registros são demonstrativos. O fluxo mantém a aprovação do gestor para acidentes e o acompanhamento de investigação e correções.</p></div>`;
+    let submitted=false;
+    function update(){const park=host.querySelector("#incident-park").value,status=host.querySelector("#incident-status").value,type=host.querySelector("#incident-type").value;const rows=incidentRecords.filter(function(r){return(park==="Todos"||r.park===park)&&(status==="Todos"||r.status===status)&&(type==="Todos"||r.type===type);});host.querySelector("#incident-empty").hidden=submitted;host.querySelector("#incident-results").hidden=!submitted;if(!submitted)return;const body=host.querySelector("#incident-rows");body.innerHTML="";rows.forEach(function(r){const tr=document.createElement("tr");[r.id,r.date,r.park,r.type,r.title,r.status,r.owner].forEach(function(value,i){const td=document.createElement("td");td.textContent=value;if(i===0)td.className="record-name";if(i===5){const badge=document.createElement("span");badge.className="state"+(r.status==="Concluído"?"":" pending");badge.textContent=value;td.innerHTML="";td.appendChild(badge);}tr.appendChild(td);});body.appendChild(tr);});host.querySelector("#incident-total").textContent=String(rows.length);host.querySelector("#incident-open").textContent=String(rows.filter(function(r){return r.status!=="Concluído";}).length);host.querySelector("#incident-approval").textContent=String(rows.filter(function(r){return r.status==="Aguardando aprovação";}).length);if(!rows.length){host.querySelector("#incident-empty").innerHTML="Nenhuma ocorrência encontrada com esses filtros.";host.querySelector("#incident-empty").hidden=false;}}
+    host.querySelector("#incident-search").addEventListener("click",function(){submitted=true;update();});["#incident-park","#incident-status","#incident-type"].forEach(function(id){host.querySelector(id).addEventListener("change",function(){submitted=false;host.querySelector("#incident-empty").textContent="Filtros alterados. Clique em Consultar para atualizar as ocorrências.";update();});});
+  }
+  function showView(key,label){
+    root.querySelectorAll(".nav-item").forEach(function(button){const active=button.dataset.view===key;button.classList.toggle("active",active);if(active){button.setAttribute("aria-current","page");}else{button.removeAttribute("aria-current");}});
+    root.querySelector("#breadcrumb").textContent="/ "+label;
+    const entityKind=key==="fornecedor"?"Fornecedor":key==="trabalhador"?"Trabalhador":key==="ativos"?"Ativos":"";
+    if(key==="atividades"){root.querySelector("#query-view").hidden=true;root.querySelector("#module-view").hidden=false;root.querySelector("#module-title").textContent="Atividades e checklists";root.querySelector("#module-description").textContent="Cadastre atividades, riscos, controles e itens de verificação que serão sincronizados com o app Android.";renderActivities();return;}
+    if(key==="incidentes"){root.querySelector("#query-view").hidden=true;root.querySelector("#module-view").hidden=false;root.querySelector("#module-title").textContent="Gestão de incidentes";root.querySelector("#module-description").textContent="Consulte comunicações, aprovações, investigações e ações corretivas por filtros.";renderIncidents();return;}
+    if(key==="inspecoes"){root.querySelector("#query-view").hidden=true;root.querySelector("#module-view").hidden=false;root.querySelector("#module-title").textContent="Inspeções por objeto";root.querySelector("#module-description").textContent="Consulte inspeções por máquinas, equipamentos, veículos e acessórios de içamento.";renderInspections();return;}
+    if(key==="app"){root.querySelector("#query-view").hidden=true;root.querySelector("#module-view").hidden=false;root.querySelector("#module-title").textContent="App Android";root.querySelector("#module-description").textContent="Prévia do acesso às inspeções de campo e da sincronização manual.";renderAndroidSync();return;}
+    const isQuery=key==="consulta"||Boolean(entityKind);
+    root.querySelector("#query-view").hidden=!isQuery;
+    root.querySelector("#module-view").hidden=isQuery;
+    if(isQuery){
+      root.querySelector("#query-title").textContent=key==="consulta"?"Consulta por parque":label;
+      root.querySelector("#park-filter").value=key==="consulta"?"":"Todos";
+      root.querySelector("#kind-filter").value=entityKind||"Todos";
+      root.querySelector("#state-filter").value="Todas";
+      querySubmitted=key!=="consulta";
+      render();
+      return;
+    }
+    if(key==="docs"){root.querySelector("#module-title").textContent="Documentos e requisitos";root.querySelector("#module-description").textContent="Documentação interna, envio de fornecedores e evidências para requisitos e auditorias.";renderDocsModule();return;}
+    if(key==="overview"){root.querySelector("#module-title").textContent="Painel geral";root.querySelector("#module-description").textContent="Visão consolidada da documentação, inspeções, incidentes e EPIs.";renderDashboard();return;}
+    if(key==="epis"){root.querySelector("#module-title").textContent="Gestão de EPIs";root.querySelector("#module-description").textContent="Controle estoque, entregas, reposições e histórico por trabalhador e parque.";renderEpiModule();return;}
+    const data=views[key];
+    root.querySelector("#module-title").textContent=data.title;
+    root.querySelector("#module-description").textContent=data.description;
+    const host=root.querySelector("#module-content");host.innerHTML="";
+    data.items.forEach(function(item){const row=document.createElement("div");row.className="module-row";const strong=document.createElement("strong");strong.textContent=item[0];const detail=document.createElement("span");detail.textContent=item[1];row.append(strong,detail);host.appendChild(row);});
+  }
+  root.querySelectorAll(".nav-item").forEach(function(button){button.addEventListener("click",function(){showView(button.dataset.view,button.textContent.trim());});});  const records=[
+    {park:"Maral",name:"Ventos do Norte Ltda.",id:"FOR-0031",kind:"Fornecedor",owner:"Contrato manutenção",docs:"8 de 8",state:"Regular",due:"18/11/2026"},
+    {park:"Maral",name:"Lucas Ferreira Costa",id:"PES-0218",kind:"Trabalhador",owner:"Ventos do Norte",docs:"6 de 6",state:"Regular",due:"02/12/2026"},
+    {park:"Maral",name:"Caminhonete 4x4",id:"VEI-0012 · MRL2A31",kind:"Veículo",owner:"Ventos do Norte",docs:"3 de 4",state:"Atenção",due:"Documento pendente"},
+    {park:"Maral",name:"Plataforma elevatória",id:"MAQ-0008",kind:"Máquina",owner:"Ventos do Norte",docs:"4 de 4",state:"Regular",due:"10/01/2027"},
+    {park:"Terra Santa",name:"Flexwind Serviços",id:"FOR-0007",kind:"Fornecedor",owner:"Contrato operação",docs:"7 de 8",state:"Atenção",due:"Documento pendente"},
+    {park:"Terra Santa",name:"Ana Paula Nascimento",id:"PES-0475",kind:"Trabalhador",owner:"Flexwind Serviços",docs:"5 de 5",state:"Regular",due:"22/12/2026"},
+    {park:"Terra Santa",name:"Veículo de apoio",id:"VEI-00482 · TSX4B80",kind:"Veículo",owner:"Flexwind Serviços",docs:"4 de 4",state:"Regular",due:"15/12/2026"},
+    {park:"Terra Santa",name:"Guindaste 50 t",id:"MAQ-0017",kind:"Máquina",owner:"Flexwind Serviços",docs:"2 de 3",state:"Atenção",due:"Documento pendente"}
+  ];
+  let querySubmitted=false;
+  function render(){
+    const park=root.querySelector("#park-filter").value;
+    const kind=root.querySelector("#kind-filter").value;
+    const state=root.querySelector("#state-filter").value;
+    const empty=root.querySelector("#query-empty");const results=root.querySelector("#query-results");
+    const canShow=querySubmitted&&Boolean(park);empty.hidden=canShow;results.hidden=!canShow;if(!canShow){return;}
+    const rows=records.filter(function(r){return (park==="Todos"||r.park===park)&&(kind==="Todos"||r.kind===kind||(kind==="Ativos"&&(r.kind==="Veículo"||r.kind==="Máquina")))&&(state==="Todas"||r.state===state);});
+    const body=root.querySelector("#result-rows");body.innerHTML="";
+    rows.forEach(function(r){
+      const tr=document.createElement("tr");
+      const cells=[{name:r.name,id:r.id},r.kind,r.owner,r.docs,r.state,r.due];
+      cells.forEach(function(value,index){const td=document.createElement("td");if(index===0){const name=document.createElement("span");name.className="record-name";name.textContent=value.name;const id=document.createElement("span");id.className="sub";id.textContent=r.park+" · "+value.id;td.append(name,id);}else if(index===4){const badge=document.createElement("span");badge.className="state"+(r.state==="Atenção"?" pending":"");badge.textContent=r.state;td.appendChild(badge);}else{td.textContent=value;}tr.appendChild(td);});body.appendChild(tr);
+    });
+    const ok=rows.filter(function(r){return r.state==="Regular";}).length;
+    root.querySelector("#metric-total").textContent=String(rows.length);
+    root.querySelector("#metric-ok").textContent=String(ok);
+    root.querySelector("#metric-pending").textContent=String(rows.length-ok);
+    root.querySelector("#results-count").textContent=rows.length+" "+(rows.length===1?"resultado":"resultados");
+  }
+  root.querySelector("#apply-filter").addEventListener("click",function(){if(!root.querySelector("#park-filter").value){root.querySelector("#query-empty").textContent="Escolha um parque antes de consultar.";return;}querySubmitted=true;render();});
+  root.querySelector("#query-access-request").addEventListener("click",function(){root.querySelector("#query-access-message").textContent=" Solicitação de acesso a outra unidade registrada para análise do superior (demonstração).";});
+  ["#park-filter","#kind-filter","#state-filter"].forEach(function(id){root.querySelector(id).addEventListener("change",function(){querySubmitted=false;root.querySelector("#query-empty").textContent="Filtros alterados. Clique em Consultar para atualizar os resultados.";render();});});
+  querySubmitted=false;render();
+})();
+</script>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
